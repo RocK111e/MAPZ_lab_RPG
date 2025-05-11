@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/home/vovus/Vovus/MAPZ_lab_RPG/MAPZ_lab_RPG.csproj": {}
+    "/home/rock1e/nulp/MAPZ_RPG/MAPZ_lab_RPG/MAPZ_lab_RPG.csproj": {}
   },
   "projects": {
-    "/home/vovus/Vovus/MAPZ_lab_RPG/MAPZ_lab_RPG.csproj": {
+    "/home/rock1e/nulp/MAPZ_RPG/MAPZ_lab_RPG/MAPZ_lab_RPG.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/vovus/Vovus/MAPZ_lab_RPG/MAPZ_lab_RPG.csproj",
+        "projectUniqueName": "/home/rock1e/nulp/MAPZ_RPG/MAPZ_lab_RPG/MAPZ_lab_RPG.csproj",
         "projectName": "MAPZ_lab_RPG",
-        "projectPath": "/home/vovus/Vovus/MAPZ_lab_RPG/MAPZ_lab_RPG.csproj",
-        "packagesPath": "/home/vovus/.nuget/packages/",
-        "outputPath": "/home/vovus/Vovus/MAPZ_lab_RPG/obj/",
+        "projectPath": "/home/rock1e/nulp/MAPZ_RPG/MAPZ_lab_RPG/MAPZ_lab_RPG.csproj",
+        "packagesPath": "/home/rock1e/.nuget/packages/",
+        "outputPath": "/home/rock1e/nulp/MAPZ_RPG/MAPZ_lab_RPG/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/vovus/.nuget/NuGet/NuGet.Config"
+          "/home/rock1e/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -53,7 +53,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/8.0.114/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/8.0.115/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

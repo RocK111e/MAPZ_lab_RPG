@@ -22,9 +22,9 @@ namespace MAPZ_lab_RPG.Entities.Enemies
             System.Console.Out.WriteLine("Enemy is being atacked");
             return Health;
         }
-        public float Health;
-        public float Damage;
-        public float Armor;
-        public string Race;
+        public float Health {get; set;}
+        public float Damage {get; set;}
+        public float Armor {get; set;}
+        public string Race {get; set;}
     }
 }

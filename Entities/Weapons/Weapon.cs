@@ -11,7 +11,7 @@ namespace MAPZ_lab_RPG.Entities.Weapons
             Damage = 10;
             Name = "Knife";
         }
-        public float Damage;
-        public string Name;
+        public float Damage {get; set;}
+        public string Name {get; set;}
     }
 }

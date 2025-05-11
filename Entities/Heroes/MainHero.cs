@@ -42,10 +42,10 @@ namespace MAPZ_lab_RPG.Entities.Heroes
             return Health;
         }
 
-        public float Health;
-        public float Damage;
-        public float Armor;
-        public string Name;
+        public float Health {get; set;}
+        public float Damage {get; set;}
+        public float Armor {get; set;}
+        public string Name {get; set;}
     }
 
 }

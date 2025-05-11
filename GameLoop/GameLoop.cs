@@ -2,22 +2,29 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MAPZ_lab_RPG.Entities.Enemies;
+using MAPZ_lab_RPG.Entities.Heroes;
+using MAPZ_lab_RPG.Entities.Weapons;
 
 namespace MAPZ_lab_RPG.GameLoop
 {
     public class GameLoop
     {
-        // Enemies
-        // Hero
-        // Items
-        public int Level { get }
+        public MainHero MainHero { get; set; }
+        public Enemy Enemy { get; set; }
+        public Weapon Weapon { get; set; }
+        public int Level { get; }
 
         // add here fields
-        public void GameLoop(){
-
+        public GameLoop(){
+            MainHero = MainHero.Instance;
+            Enemy = new Enemy();
+            Weapon = new Weapon();
+            Level = 1;
         }  
         public void StartGameLoop()
         {
+            AllStatsInerface();
             char Action;
             bool IsRunning = true;
             while (IsRunning) {
@@ -56,8 +63,11 @@ namespace MAPZ_lab_RPG.GameLoop
 
         public void AllStatsInerface()
         {
-            // Display all stats
-            Console.WriteLine("Displaying all stats...");
+            Console.WriteLine("All stats:");
+            Console.WriteLine($"Hero: {MainHero.Name}, Health: {MainHero.Health}, Damage: {MainHero.Damage}, Armor: {MainHero.Armor}");
+            Console.WriteLine($"Enemy: {Enemy.Race}, Health: {Enemy.Health}, Damage: {Enemy.Damage}, Armor: {Enemy.Armor}");
+            Console.WriteLine($"Weapon: {Weapon.Name}, Damage: {Weapon.Damage}");
+            Console.WriteLine($"Level: {Level}");
         }
     }
 }
