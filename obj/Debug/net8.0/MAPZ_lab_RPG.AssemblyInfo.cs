@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MAPZ_lab_RPG")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c2df1c23ee76866c03a7073c89910b5c20e4bf10")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7149fcfe26ce530ee4f2dfae9b38175d66d40f0c")]
 [assembly: System.Reflection.AssemblyProductAttribute("MAPZ_lab_RPG")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MAPZ_lab_RPG")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
