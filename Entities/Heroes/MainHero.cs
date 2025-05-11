@@ -23,29 +23,59 @@ namespace MAPZ_lab_RPG.Entities.Heroes
 
         private MainHero()
         {
-            Health = 100;
-            Damage = 10;
-            Armor = 5;
-            Name = "Kamala";
+        }
+
+        public HeroSelect(string hero_name){
+            switch (hero_name)
+            {
+                case "Archer":
+                    hero = new Archer();
+                    break;
+                case "Swordsman":
+                    hero = new Swordsman();
+                    break;
+                case "Pirate":
+                    hero = new Pirate();
+                    break;
+                default:
+                    throw new ArgumentException("Invalid hero name");
+            }
         }
 
         public float Atack()
         {
-            System.Console.Out.WriteLine("Hero is atacking");
-            return Damage;
+            return hero.Atack();
         }
 
         public float GetDamage(float damage)
         {
-            Health -= damage;
-            System.Console.Out.WriteLine("Hero is being atacked");
-            return Health;
+            return hero.GetDamage(damage);
         }
-
-        public float Health {get; set;}
-        public float Damage {get; set;}
-        public float Armor {get; set;}
-        public string Name {get; set;}
+        public float Heal(float healAmount)
+        {
+            return hero.Heal(healAmount);
+        }
+        public void LevelUp()
+        {
+            hero.LevelUp();
+        }
+        public int AddCoins(float coins)
+        {
+            return hero.AddCoins(coins);
+        }
+        public void AddExperience(int experience)
+        {
+            hero.AddExperience(experience);
+        }
+        public void Upgrade(string attribute)
+        {
+            hero.Upgrade(attribute);
+        }
+        public void AddItem(Items item)
+        {
+            hero.AddItem(item);
+        }
+        private IHero hero {get; set;};
     }
 
 }

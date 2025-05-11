@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MAPZ_lab_RPG.Entities.Weapons
+namespace MAPZ_lab_RPG.Entities.Items
 {
-    public class Weapon
+    public class Item
     {
-        public Weapon(){
+        public Item(){
             Damage = 10;
             Name = "Knife";
         }
