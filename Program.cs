@@ -1,2 +1,4 @@
-﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
+﻿using MAPZ_lab_RPG.GameLoop;
+
+GameLoop gameLoop = new GameLoop();
+gameLoop.StartGameLoop();
