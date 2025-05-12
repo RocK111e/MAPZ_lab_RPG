@@ -1,0 +1,159 @@
+[gd_scene load_steps=3 format=3 uid="uid://b5q6q3q4x8y7"]
+
+[ext_resource type="Script" uid="uid://cwc3sfj48n6e2" path="res://Main.cs" id="1"]
+[ext_resource type="Texture2D" uid="uid://c0c5ecelkkp4d" path="res://icon.svg" id="2"]
+
+[node name="Main" type="Node2D"]
+script = ExtResource("1")
+
+[node name="Hero" type="Sprite2D" parent="."]
+position = Vector2(100, 300)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2")
+
+[node name="HeroName" type="Label" parent="Hero"]
+offset_left = -50.0
+offset_top = -100.0
+offset_right = 50.0
+offset_bottom = -86.0
+text = "Archer"
+horizontal_alignment = 1
+
+[node name="HeroHPBar" type="ProgressBar" parent="Hero"]
+offset_left = -50.0
+offset_top = 80.0
+offset_right = 50.0
+offset_bottom = 100.0
+value = 100.0
+
+[node name="EnemiesContainer" type="Node2D" parent="."]
+position = Vector2(748, 300)
+
+[node name="EnemyPlaceholders" type="Node2D" parent="EnemiesContainer"]
+position = Vector2(-300, -100)
+
+[node name="EnemyPlaceholder1" type="Sprite2D" parent="EnemiesContainer/EnemyPlaceholders"]
+visible = false
+position = Vector2(150, 100)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2")
+
+[node name="EnemyPlaceholder1Name" type="Label" parent="EnemiesContainer/EnemyPlaceholders/EnemyPlaceholder1"]
+offset_left = -50.0
+offset_top = -100.0
+offset_right = 50.0
+offset_bottom = -86.0
+horizontal_alignment = 1
+
+[node name="EnemyPlaceholder1HPBar" type="ProgressBar" parent="EnemiesContainer/EnemyPlaceholders/EnemyPlaceholder1"]
+visible = false
+offset_left = -50.0
+offset_top = 80.0
+offset_right = 50.0
+offset_bottom = 100.0
+value = 100.0
+
+[node name="EnemyPlaceholder2" type="Sprite2D" parent="EnemiesContainer/EnemyPlaceholders"]
+visible = false
+position = Vector2(300, 100)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2")
+
+[node name="EnemyPlaceholder2Name" type="Label" parent="EnemiesContainer/EnemyPlaceholders/EnemyPlaceholder2"]
+offset_left = -50.0
+offset_top = -100.0
+offset_right = 50.0
+offset_bottom = -86.0
+horizontal_alignment = 1
+
+[node name="EnemyPlaceholder2HPBar" type="ProgressBar" parent="EnemiesContainer/EnemyPlaceholders/EnemyPlaceholder2"]
+visible = false
+offset_left = -50.0
+offset_top = 80.0
+offset_right = 50.0
+offset_bottom = 100.0
+value = 100.0
+
+[node name="EnemyPlaceholder3" type="Sprite2D" parent="EnemiesContainer/EnemyPlaceholders"]
+visible = false
+position = Vector2(450, 100)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2")
+
+[node name="EnemyPlaceholder3Name" type="Label" parent="EnemiesContainer/EnemyPlaceholders/EnemyPlaceholder3"]
+offset_left = -50.0
+offset_top = -100.0
+offset_right = 50.0
+offset_bottom = -86.0
+horizontal_alignment = 1
+
+[node name="EnemyPlaceholder3HPBar" type="ProgressBar" parent="EnemiesContainer/EnemyPlaceholders/EnemyPlaceholder3"]
+visible = false
+offset_left = -50.0
+offset_top = 80.0
+offset_right = 50.0
+offset_bottom = 100.0
+value = 100.0
+
+[node name="EnemyPlaceholder4" type="Sprite2D" parent="EnemiesContainer/EnemyPlaceholders"]
+visible = false
+position = Vector2(150, 300)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2")
+
+[node name="EnemyPlaceholder4Name" type="Label" parent="EnemiesContainer/EnemyPlaceholders/EnemyPlaceholder4"]
+offset_left = -50.0
+offset_top = -100.0
+offset_right = 50.0
+offset_bottom = -86.0
+horizontal_alignment = 1
+
+[node name="EnemyPlaceholder4HPBar" type="ProgressBar" parent="EnemiesContainer/EnemyPlaceholders/EnemyPlaceholder4"]
+visible = false
+offset_left = -50.0
+offset_top = 80.0
+offset_right = 50.0
+offset_bottom = 100.0
+value = 100.0
+
+[node name="EnemyPlaceholder5" type="Sprite2D" parent="EnemiesContainer/EnemyPlaceholders"]
+visible = false
+position = Vector2(300, 300)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2")
+
+[node name="EnemyPlaceholder5Name" type="Label" parent="EnemiesContainer/EnemyPlaceholders/EnemyPlaceholder5"]
+offset_left = -50.0
+offset_top = -100.0
+offset_right = 50.0
+offset_bottom = -86.0
+horizontal_alignment = 1
+
+[node name="EnemyPlaceholder5HPBar" type="ProgressBar" parent="EnemiesContainer/EnemyPlaceholders/EnemyPlaceholder5"]
+visible = false
+offset_left = -50.0
+offset_top = 80.0
+offset_right = 50.0
+offset_bottom = 100.0
+value = 100.0
+
+[node name="EnemyPlaceholder6" type="Sprite2D" parent="EnemiesContainer/EnemyPlaceholders"]
+visible = false
+position = Vector2(450, 300)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2")
+
+[node name="EnemyPlaceholder6Name" type="Label" parent="EnemiesContainer/EnemyPlaceholders/EnemyPlaceholder6"]
+offset_left = -50.0
+offset_top = -100.0
+offset_right = 50.0
+offset_bottom = -86.0
+horizontal_alignment = 1
+
+[node name="EnemyPlaceholder6HPBar" type="ProgressBar" parent="EnemiesContainer/EnemyPlaceholders/EnemyPlaceholder6"]
+visible = false
+offset_left = -50.0
+offset_top = 80.0
+offset_right = 50.0
+offset_bottom = 100.0
+value = 100.0

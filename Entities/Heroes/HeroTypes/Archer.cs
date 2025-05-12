@@ -1,9 +1,10 @@
 using MAPZ_lab_RPG.Entities.Items;
+using MAPZ_lab_RPG.Entities.Heroes;
+using System;
+using System.Collections.Generic;
 
 namespace MAPZ_lab_RPG.Entities.Heroes.HeroTypes
 {
-    using MAPZ_lab_RPG.Entities.Heroes;
-    using System;
 
     public class Archer : IHero
     {
