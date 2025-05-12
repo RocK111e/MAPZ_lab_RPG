@@ -14,12 +14,12 @@ namespace MAPZ_lab_RPG.Entities.Enemies
             Armor = 8 + 1 * level;
             Race = "Ork";
         }
-        public double Atack(){
+        public double Attack(){
             System.Console.Out.WriteLine("Ork is atacking");
             return Damage;
         }
-        public double GetDamage(double Damage){
-            Health = Health - Damage;
+        public double GetDamage(double damageTaken){
+            Health = Health - damageTaken;
             System.Console.Out.WriteLine("Ork is being atacked");
             return Health;
         }
@@ -37,12 +37,12 @@ namespace MAPZ_lab_RPG.Entities.Enemies
             Armor = 3 + 0.5 * level;
             Race = "Goblin";
         }
-        public double Atack(){
+        public double Attack(){
             System.Console.Out.WriteLine("Goblin is atacking");
             return Damage;
         }
-        public double GetDamage(double Damage){
-            Health = Health - Damage;
+        public double GetDamage(double damageTaken){
+            Health = Health - damageTaken;
             System.Console.Out.WriteLine("Goblin is being atacked");
             return Health;
         }
@@ -52,21 +52,21 @@ namespace MAPZ_lab_RPG.Entities.Enemies
         public string Race { get; private set; }
     }
     //Normis
-    public class Trol : IEnemy
+    public class Troll : IEnemy
     {
-        public Trol(int level){
+        public Troll(int level){
             Health = 100 + 15 * level;
             Damage = 10 + 1 * level;
             Armor = 5 + 1 * level;
             Race = "Trol";
         }
-        public double Atack(){
-            System.Console.Out.WriteLine("Trol is atacking");
+        public double Attack(){
+            System.Console.Out.WriteLine("Troll is atacking");
             return Damage;
         }
-        public double GetDamage(double Damage){
-            Health = Health - Damage;
-            System.Console.Out.WriteLine("Trol is being atacked");
+        public double GetDamage(double damageTaken){
+            Health = Health - damageTaken;
+            System.Console.Out.WriteLine("Troll is being atacked");
             return Health;
         }
         public double Health { get; private set; }

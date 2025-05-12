@@ -21,11 +21,11 @@ namespace MAPZ_lab_RPG.Entities.Enemies
         }
     }
 
-    public class TrolFactory : EnemyFactory
+    public class TrollFactory : EnemyFactory
     {
         public override IEnemy CreateEnemy(int level)
         {
-            return new Trol(level);
+            return new Troll(level);
         }
     }
 }

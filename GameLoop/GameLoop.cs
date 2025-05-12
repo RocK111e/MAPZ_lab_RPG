@@ -36,6 +36,16 @@ namespace MAPZ_lab_RPG.GameLoop
                         ChooseEnemyInterface();
                         int enemyChoice = int.Parse(Console.ReadLine());
                         // Handle enemy choice
+                        //
+                        //
+                        // ENEMY RANDOM CHOOSING
+                        //
+                        //
+                        // EnemyCreator factory = EnemyCreator.Instance;
+                        // var enemies = factory.CreateEnemies(1);
+                        // foreach (IEnemy enemy in enemies){
+                        //     Console.WriteLine($"\nRace: {enemy.Race}\nHealth: {enemy.Health}\nArmor: {enemy.Armor}\nDamage: {enemy.Damage}\n");
+                        // }
                         break;
                     case 'Q':
                         IsRunning = false;
