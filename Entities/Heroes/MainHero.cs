@@ -23,10 +23,6 @@ namespace MAPZ_lab_RPG.Entities.Heroes
             }
         }
 
-        private MainHero()
-        {
-        }
-
         public void HeroSelect(string hero_name){
             switch (hero_name)
             {
