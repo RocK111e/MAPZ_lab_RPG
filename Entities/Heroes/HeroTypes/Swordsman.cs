@@ -1,3 +1,4 @@
+using MAPZ_lab_RPG.Entities.Items;
 namespace MAPZ_lab_RPG.Entities.Heroes.HeroTypes
 {
     using MAPZ_lab_RPG.Entities.Heroes;
@@ -16,7 +17,7 @@ namespace MAPZ_lab_RPG.Entities.Heroes.HeroTypes
             Experience = 0;
             Level = 1;
             LevelPoints = 0;
-            Inventory = new List<Items>();
+            Inventory = new List<Item>();
         }
 
         public float Atack()
@@ -46,7 +47,7 @@ namespace MAPZ_lab_RPG.Entities.Heroes.HeroTypes
         public void LevelUp()
         {
             Level++;
-            Perks++;
+            LevelPoints++;
         }
 
         public void Upgrade(string attribute)
@@ -67,5 +68,16 @@ namespace MAPZ_lab_RPG.Entities.Heroes.HeroTypes
                     break;
             }
         }
+        public string Name { get; set; }
+        public float MaxHealth { get; set; }
+        public float CurrentHealth { get; set; }
+        public float Damage { get; set; }
+        public float Armor { get; set; }
+
+        public int Coins { get; set; }
+        public int Experience { get; set; }
+        public int Level { get; set; }
+        public int LevelPoints{ get; set; }
+        public List<Item> Inventory { get; set; }
     }
 }

@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MAPZ_lab_RPG.Entities.Items;
+using MAPZ_lab_RPG.Entities.Heroes.HeroTypes;
 
 namespace MAPZ_lab_RPG.Entities.Heroes
 {
@@ -25,7 +27,7 @@ namespace MAPZ_lab_RPG.Entities.Heroes
         {
         }
 
-        public HeroSelect(string hero_name){
+        public void HeroSelect(string hero_name){
             switch (hero_name)
             {
                 case "Archer":
@@ -59,7 +61,7 @@ namespace MAPZ_lab_RPG.Entities.Heroes
         {
             hero.LevelUp();
         }
-        public int AddCoins(float coins)
+        public int AddCoins(int coins)
         {
             return hero.AddCoins(coins);
         }
@@ -71,11 +73,11 @@ namespace MAPZ_lab_RPG.Entities.Heroes
         {
             hero.Upgrade(attribute);
         }
-        public void AddItem(Items item)
+        public void AddItem(Item item)
         {
             hero.AddItem(item);
         }
-        private IHero hero {get; set;};
+        private IHero hero {get; set;}
     }
 
 }
