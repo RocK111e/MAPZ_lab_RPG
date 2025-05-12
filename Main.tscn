@@ -1,159 +1,233 @@
-[gd_scene load_steps=3 format=3 uid="uid://b5q6q3q4x8y7"]
+[gd_scene load_steps=2 format=3 uid="uid://c4a5b6d7e8ga"]
 
-[ext_resource type="Script" uid="uid://cwc3sfj48n6e2" path="res://Main.cs" id="1"]
-[ext_resource type="Texture2D" uid="uid://c0c5ecelkkp4d" path="res://icon.svg" id="2"]
+[ext_resource type="Script" uid="uid://cwc3sfj48n6e2" path="res://Main.cs" id="1_main_script"]
 
 [node name="Main" type="Node2D"]
-script = ExtResource("1")
+script = ExtResource("1_main_script")
 
-[node name="Hero" type="Sprite2D" parent="."]
-position = Vector2(100, 300)
-scale = Vector2(0.5, 0.5)
-texture = ExtResource("2")
+[node name="CombatView" type="CanvasLayer" parent="."]
 
-[node name="HeroName" type="Label" parent="Hero"]
-offset_left = -50.0
-offset_top = -100.0
-offset_right = 50.0
-offset_bottom = -86.0
-text = "Archer"
+[node name="Background" type="ColorRect" parent="CombatView"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.15, 0.15, 0.2, 1)
+metadata/_edit_use_anchors_ = true
+
+[node name="HeroDisplay" type="Node2D" parent="CombatView"]
+position = Vector2(150, 450)
+
+[node name="HeroSprite" type="Sprite2D" parent="CombatView/HeroDisplay"]
+scale = Vector2(3, 3)
+
+[node name="HeroStatusUI" type="VBoxContainer" parent="CombatView/HeroDisplay"]
+offset_left = -60.0
+offset_top = 100.0
+offset_right = 80.0
+offset_bottom = 180.0
+
+[node name="HeroHPLabel" type="Label" parent="CombatView/HeroDisplay/HeroStatusUI"]
+layout_mode = 2
+text = "HP: 100 / 100"
 horizontal_alignment = 1
 
-[node name="HeroHPBar" type="ProgressBar" parent="Hero"]
-offset_left = -50.0
-offset_top = 80.0
-offset_right = 50.0
-offset_bottom = 100.0
-value = 100.0
-
-[node name="EnemiesContainer" type="Node2D" parent="."]
-position = Vector2(748, 300)
-
-[node name="EnemyPlaceholders" type="Node2D" parent="EnemiesContainer"]
-position = Vector2(-300, -100)
-
-[node name="EnemyPlaceholder1" type="Sprite2D" parent="EnemiesContainer/EnemyPlaceholders"]
-visible = false
-position = Vector2(150, 100)
-scale = Vector2(0.5, 0.5)
-texture = ExtResource("2")
-
-[node name="EnemyPlaceholder1Name" type="Label" parent="EnemiesContainer/EnemyPlaceholders/EnemyPlaceholder1"]
-offset_left = -50.0
-offset_top = -100.0
-offset_right = 50.0
-offset_bottom = -86.0
+[node name="HeroArmorLabel" type="Label" parent="CombatView/HeroDisplay/HeroStatusUI"]
+layout_mode = 2
+text = "Armor: 0"
 horizontal_alignment = 1
 
-[node name="EnemyPlaceholder1HPBar" type="ProgressBar" parent="EnemiesContainer/EnemyPlaceholders/EnemyPlaceholder1"]
-visible = false
-offset_left = -50.0
-offset_top = 80.0
-offset_right = 50.0
-offset_bottom = 100.0
-value = 100.0
-
-[node name="EnemyPlaceholder2" type="Sprite2D" parent="EnemiesContainer/EnemyPlaceholders"]
-visible = false
-position = Vector2(300, 100)
-scale = Vector2(0.5, 0.5)
-texture = ExtResource("2")
-
-[node name="EnemyPlaceholder2Name" type="Label" parent="EnemiesContainer/EnemyPlaceholders/EnemyPlaceholder2"]
-offset_left = -50.0
-offset_top = -100.0
-offset_right = 50.0
-offset_bottom = -86.0
+[node name="HeroCoinsLabel" type="Label" parent="CombatView/HeroDisplay/HeroStatusUI"]
+layout_mode = 2
+text = "Coins: 100"
 horizontal_alignment = 1
 
-[node name="EnemyPlaceholder2HPBar" type="ProgressBar" parent="EnemiesContainer/EnemyPlaceholders/EnemyPlaceholder2"]
-visible = false
-offset_left = -50.0
-offset_top = 80.0
-offset_right = 50.0
-offset_bottom = 100.0
-value = 100.0
-
-[node name="EnemyPlaceholder3" type="Sprite2D" parent="EnemiesContainer/EnemyPlaceholders"]
-visible = false
-position = Vector2(450, 100)
-scale = Vector2(0.5, 0.5)
-texture = ExtResource("2")
-
-[node name="EnemyPlaceholder3Name" type="Label" parent="EnemiesContainer/EnemyPlaceholders/EnemyPlaceholder3"]
-offset_left = -50.0
-offset_top = -100.0
-offset_right = 50.0
-offset_bottom = -86.0
+[node name="HeroLevelLabel" type="Label" parent="CombatView/HeroDisplay/HeroStatusUI"]
+layout_mode = 2
+text = "Level: 1"
 horizontal_alignment = 1
 
-[node name="EnemyPlaceholder3HPBar" type="ProgressBar" parent="EnemiesContainer/EnemyPlaceholders/EnemyPlaceholder3"]
-visible = false
-offset_left = -50.0
-offset_top = 80.0
-offset_right = 50.0
-offset_bottom = 100.0
-value = 100.0
+[node name="EnemyArea" type="Node2D" parent="CombatView"]
+position = Vector2(750, 300)
 
-[node name="EnemyPlaceholder4" type="Sprite2D" parent="EnemiesContainer/EnemyPlaceholders"]
-visible = false
-position = Vector2(150, 300)
-scale = Vector2(0.5, 0.5)
-texture = ExtResource("2")
+[node name="EnemyPlaceholder1" type="Node2D" parent="CombatView/EnemyArea"]
 
-[node name="EnemyPlaceholder4Name" type="Label" parent="EnemiesContainer/EnemyPlaceholders/EnemyPlaceholder4"]
-offset_left = -50.0
-offset_top = -100.0
-offset_right = 50.0
-offset_bottom = -86.0
+[node name="Sprite2D" type="Sprite2D" parent="CombatView/EnemyArea/EnemyPlaceholder1"]
+
+[node name="Label" type="Label" parent="CombatView/EnemyArea/EnemyPlaceholder1"]
+offset_left = -25.0
+offset_top = 50.0
+offset_right = 25.0
+offset_bottom = 73.0
+text = "Enemy1 HP"
 horizontal_alignment = 1
 
-[node name="EnemyPlaceholder4HPBar" type="ProgressBar" parent="EnemiesContainer/EnemyPlaceholders/EnemyPlaceholder4"]
-visible = false
-offset_left = -50.0
-offset_top = 80.0
-offset_right = 50.0
-offset_bottom = 100.0
-value = 100.0
+[node name="EnemyPlaceholder2" type="Node2D" parent="CombatView/EnemyArea"]
+position = Vector2(200, 0)
 
-[node name="EnemyPlaceholder5" type="Sprite2D" parent="EnemiesContainer/EnemyPlaceholders"]
-visible = false
-position = Vector2(300, 300)
-scale = Vector2(0.5, 0.5)
-texture = ExtResource("2")
+[node name="Sprite2D" type="Sprite2D" parent="CombatView/EnemyArea/EnemyPlaceholder2"]
 
-[node name="EnemyPlaceholder5Name" type="Label" parent="EnemiesContainer/EnemyPlaceholders/EnemyPlaceholder5"]
-offset_left = -50.0
-offset_top = -100.0
-offset_right = 50.0
-offset_bottom = -86.0
+[node name="Label" type="Label" parent="CombatView/EnemyArea/EnemyPlaceholder2"]
+offset_left = -25.0
+offset_top = 50.0
+offset_right = 25.0
+offset_bottom = 73.0
+text = "Enemy2 HP"
 horizontal_alignment = 1
 
-[node name="EnemyPlaceholder5HPBar" type="ProgressBar" parent="EnemiesContainer/EnemyPlaceholders/EnemyPlaceholder5"]
-visible = false
-offset_left = -50.0
-offset_top = 80.0
-offset_right = 50.0
-offset_bottom = 100.0
-value = 100.0
+[node name="CombatUI" type="Control" parent="CombatView"]
+layout_mode = 3
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -80.0
+grow_horizontal = 2
+grow_vertical = 0
 
-[node name="EnemyPlaceholder6" type="Sprite2D" parent="EnemiesContainer/EnemyPlaceholders"]
-visible = false
-position = Vector2(450, 300)
-scale = Vector2(0.5, 0.5)
-texture = ExtResource("2")
+[node name="HBoxContainer" type="HBoxContainer" parent="CombatView/CombatUI"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -150.0
+offset_top = -20.0
+offset_right = 150.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
 
-[node name="EnemyPlaceholder6Name" type="Label" parent="EnemiesContainer/EnemyPlaceholders/EnemyPlaceholder6"]
-offset_left = -50.0
-offset_top = -100.0
-offset_right = 50.0
-offset_bottom = -86.0
+[node name="AttackButton" type="Button" parent="CombatView/CombatUI/HBoxContainer"]
+layout_mode = 2
+text = "Attack"
+
+[node name="EndTurnButton" type="Button" parent="CombatView/CombatUI/HBoxContainer"]
+layout_mode = 2
+text = "End Turn"
+
+[node name="TurnIndicatorLabel" type="Label" parent="CombatView/CombatUI"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -75.0
+offset_top = -30.0
+offset_right = 75.0
+offset_bottom = -7.0
+grow_horizontal = 2
+text = "Hero Turn"
 horizontal_alignment = 1
 
-[node name="EnemyPlaceholder6HPBar" type="ProgressBar" parent="EnemiesContainer/EnemyPlaceholders/EnemyPlaceholder6"]
+[node name="ShopView" type="CanvasLayer" parent="."]
 visible = false
-offset_left = -50.0
-offset_top = 80.0
-offset_right = 50.0
-offset_bottom = 100.0
-value = 100.0
+
+[node name="Background" type="ColorRect" parent="ShopView"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.3, 0.25, 0.35, 1)
+metadata/_edit_use_anchors_ = true
+
+[node name="ShopTitleLabel" type="Label" parent="ShopView"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -60.0
+offset_top = 40.0
+offset_right = 60.0
+offset_bottom = 66.0
+grow_horizontal = 2
+text = "Item Shop"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ItemList" type="VBoxContainer" parent="ShopView"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -250.0
+offset_top = -150.0
+offset_right = 250.0
+offset_bottom = 150.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ShopItemEntry" type="PanelContainer" parent="ShopView/ItemList"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ShopView/ItemList/ShopItemEntry"]
+layout_mode = 2
+
+[node name="ItemIcon" type="TextureRect" parent="ShopView/ItemList/ShopItemEntry/HBoxContainer"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ItemDetails" type="VBoxContainer" parent="ShopView/ItemList/ShopItemEntry/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+
+[node name="ItemNameLabel" type="Label" parent="ShopView/ItemList/ShopItemEntry/HBoxContainer/ItemDetails"]
+layout_mode = 2
+text = "Item Name Placeholder"
+
+[node name="ItemDescriptionLabel" type="Label" parent="ShopView/ItemList/ShopItemEntry/HBoxContainer/ItemDetails"]
+layout_mode = 2
+text = "This is where the item description goes."
+autowrap_mode = 3
+
+[node name="ItemPriceLabel" type="Label" parent="ShopView/ItemList/ShopItemEntry/HBoxContainer"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+size_flags_vertical = 1
+text = "Price: 999"
+horizontal_alignment = 2
+
+[node name="BuyButton" type="Button" parent="ShopView/ItemList/ShopItemEntry/HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 4
+text = "Buy"
+
+[node name="HeroShopCoinsLabel" type="Label" parent="ShopView"]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -100.0
+offset_top = -100.0
+offset_right = 100.0
+offset_bottom = -77.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "Your Coins: 100"
+horizontal_alignment = 1
+
+[node name="LeaveShopButton" type="Button" parent="ShopView"]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -60.0
+offset_top = -60.0
+offset_right = 60.0
+offset_bottom = -30.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "Continue"
+
+[connection signal="pressed" from="CombatView/CombatUI/HBoxContainer/AttackButton" to="." method="_on_AttackButton_pressed"]
+[connection signal="pressed" from="CombatView/CombatUI/HBoxContainer/EndTurnButton" to="." method="_on_EndTurnButton_pressed"]
+[connection signal="pressed" from="ShopView/LeaveShopButton" to="." method="_on_LeaveShopButton_pressed"]
