@@ -12,16 +12,19 @@ public partial class StartMenu : Control
 
     public override void _Ready()
     {
+        GD.Print("StartMenu ready!");
         // Get references to the buttons. Adjust paths if your scene tree is different.
-        _archerButton = GetNode<Button>("VBoxContainer/ArcherButton");
-        _swordsmanButton = GetNode<Button>("VBoxContainer/SwordsmanButton");
-        _pirateButton = GetNode<Button>("VBoxContainer/PirateButton");
+        _archerButton = GetNode<Button>("CenterContainer/VBoxContainer/ArcherButton");
+        _swordsmanButton = GetNode<Button>("CenterContainer/VBoxContainer/SwordsmanButton");
+        _pirateButton = GetNode<Button>("CenterContainer/VBoxContainer/PirateButton");
 
         // Connect the 'pressed' signal of each button to a method.
         // We use lambda expressions for conciseness here.
         _archerButton.Pressed += () => OnHeroSelected("Archer");
         _swordsmanButton.Pressed += () => OnHeroSelected("Swordsman");
         _pirateButton.Pressed += () => OnHeroSelected("Pirate");
+        GD.Print("Binded buttons!");
+
     }
 
     private void OnHeroSelected(string heroName)
