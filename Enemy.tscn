@@ -1,0 +1,23 @@
+[gd_scene load_steps=2 format=3 uid="uid://bgr7w3cyp1ixf"]
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_gqquq"]
+
+[node name="Enemy" type="Node2D"]
+
+[node name="EnemyPlaceholder1" type="Node2D" parent="."]
+position = Vector2(715, 318)
+
+[node name="Sprite2D" type="Sprite2D" parent="EnemyPlaceholder1"]
+modulate = Color(0.471433, 0.133305, 0.150385, 1)
+scale = Vector2(100, 100)
+texture = SubResource("CanvasTexture_gqquq")
+
+[node name="Label" type="Label" parent="EnemyPlaceholder1"]
+modulate = Color(0.689446, 0.220348, 0.246124, 1)
+offset_left = -44.0
+offset_top = 55.0
+offset_right = 44.0
+offset_bottom = 78.0
+text = "HP 120/120"
+horizontal_alignment = 1
+metadata/_edit_use_anchors_ = true
