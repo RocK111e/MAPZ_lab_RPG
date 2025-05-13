@@ -17,38 +17,22 @@ namespace MAPZ_lab_RPG.Entities.Heroes.HeroTypes
             Coins = 0;
             Experience = 0;
             Level = 1;
-            LevelPoints = 0;
+            UpgradePoints = 0;
             Inventory = new List<Item>();
         }
 
-        public float Atack()
+        public override double Atack()
         {
             System.Console.Out.WriteLine("Swordsman is swinging sword");
             return Damage;
         }
 
-        public float GetDamage(float damage)
+        public override double TakeDamage(double damageTaken)
         {
-            damage = damage / (1 + (Armor / 100));
+            damage = damageTaken / (1 + (Armor / 100));
             CurrentHealth -= damage;
             System.Console.Out.WriteLine("Swordsman is being attacked");
             return CurrentHealth;
-        }
-
-        public float Heal(float healAmount)
-        {
-            CurrentHealth += healAmount;
-            if (CurrentHealth > MaxHealth)
-            {
-                CurrentHealth = MaxHealth;
-            }
-            return CurrentHealth;
-        }
-
-        public void LevelUp()
-        {
-            Level++;
-            LevelPoints++;
         }
 
         public void Upgrade(string attribute)
@@ -70,10 +54,10 @@ namespace MAPZ_lab_RPG.Entities.Heroes.HeroTypes
             }
         }
         public string Name { get; set; }
-        public float MaxHealth { get; set; }
-        public float CurrentHealth { get; set; }
-        public float Damage { get; set; }
-        public float Armor { get; set; }
+        public double MaxHealth { get; set; }
+        public double CurrentHealth { get; set; }
+        public double Damage { get; set; }
+        public double Armor { get; set; }
 
         public int Coins { get; set; }
         public int Experience { get; set; }

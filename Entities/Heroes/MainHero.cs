@@ -41,16 +41,16 @@ namespace MAPZ_lab_RPG.Entities.Heroes
             }
         }
 
-        public float Atack()
+        public double Atack()
         {
             return hero.Atack();
         }
 
-        public float GetDamage(float damage)
+        public double TakeDamage(double damageTaken)
         {
-            return hero.GetDamage(damage);
+            return hero.TakeDamage(damageTaken);
         }
-        public float Heal(float healAmount)
+        public double Heal(double healAmount)
         {
             return hero.Heal(healAmount);
         }
@@ -73,6 +73,36 @@ namespace MAPZ_lab_RPG.Entities.Heroes
         public void AddItem(Item item)
         {
             hero.AddItem(item);
+        }
+        public double GetDamage(){
+            return hero.Damage;
+        }
+        public double GetArmor(){
+            return hero.Armor;
+        }
+        public double GetCurrentHealth(){
+            return hero.CurrentHealth;
+        }
+        public double GetMaxHealth(){
+            return hero.MaxHealth;
+        }
+        public string GetName(){
+            return hero.Name;
+        }
+        public int GetCoins(){
+            return hero.Coins;
+        }
+        public int GetExperience(){
+            return hero.Experience;
+        }
+        public int GetLevel(){
+            return hero.Level;
+        }
+        public int GetUpgradePoints(){
+            return hero.UpgradePoints;
+        }
+        public double GetInventory(){
+            return hero.Inventory;
         }
         private IHero hero {get; set;}
     }
