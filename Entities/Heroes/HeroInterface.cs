@@ -11,11 +11,11 @@ namespace MAPZ_lab_RPG.Entities.Heroes{
         }
         public double TakeDamage(double damageTaken)
         {
-            damage = damageTaken / (1 + (Armor / 100));
+            double damage = damageTaken / (1 + (Armor / 100));
             CurrentHealth -= damage;
             return CurrentHealth;
         }
-        public double Heal(double HealAmount)
+        public double Heal(double healAmount)
         {
             CurrentHealth += healAmount;
             if (CurrentHealth > MaxHealth)
@@ -54,8 +54,8 @@ namespace MAPZ_lab_RPG.Entities.Heroes{
         public int Level { get; set; }
         public int UpgradePoints{ get; set; }
         public void Upgrade(string atribute);
-        public List<Item> Inventory { get; set; }
-        public void AddItem(Item item){
+        public List<IItem> Inventory { get; set; }
+        public void AddItem(IItem item){
             Inventory.Add(item);
         }
     }

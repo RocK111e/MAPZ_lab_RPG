@@ -180,7 +180,7 @@ public partial class Main : Node // Ensure it doesn't have a namespace or matche
 		shopItems.Clear();
 
 		// Populate shopItems list (as before)
-		var itemManager = ItemPrototypeManager.Instance;
+		var itemManager = ItemManager.Instance;
 		try
 		{
 			shopItems.Add(itemManager.CreateItem("HealthRune"));
@@ -444,7 +444,7 @@ public partial class Main : Node // Ensure it doesn't have a namespace or matche
 
 				// Apply damage to the hero
 				var heroInstance = MainHero.Instance;
-				float actualDamageTaken = heroInstance.GetDamage((float)enemyAttackDamage);
+				double actualDamageTaken = heroInstance.TakeDamage((double)enemyAttackDamage);
 				GD.Print($"Hero took {actualDamageTaken:F1} damage.");
 				UpdateHeroStatusUI(); // Update HP display
 
@@ -484,10 +484,10 @@ public partial class Main : Node // Ensure it doesn't have a namespace or matche
 		}
 
 		var heroInstance = MainHero.Instance;
-		float heroAttackDamage = heroInstance.Atack();
+		double heroAttackDamage = heroInstance.Atack();
 		GD.Print($"Hero attacks {targetEnemy.Race} for {heroAttackDamage:F1} potential damage.");
 
-		double actualDamageDealt = targetEnemy.GetDamage(heroAttackDamage);
+		double actualDamageDealt = targetEnemy.TakeDamage(heroAttackDamage);
 		GD.Print($"{targetEnemy.Race} took {actualDamageDealt:F1} damage. Remaining health: {targetEnemy.Health:F1}");
 
 		// Update the specific enemy's HP display

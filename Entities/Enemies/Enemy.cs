@@ -18,7 +18,7 @@ namespace MAPZ_lab_RPG.Entities.Enemies
             return Damage;
         }
         public double TakeDamage(double damageTaken){
-            damage = damageTaken / (1 + (Armor / 100));
+            double damage = damageTaken / (1 + (Armor / 100));
             Health -= damage;
             System.Console.Out.WriteLine("Enemy is being atacked");
             return Health;

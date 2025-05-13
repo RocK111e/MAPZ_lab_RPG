@@ -1,5 +1,7 @@
 using System;
-using MAPZ_lab_RPG.Entities.Items;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;using MAPZ_lab_RPG.Entities.Items;
 using MAPZ_lab_RPG.Entities.Heroes.HeroTypes;
 
 namespace MAPZ_lab_RPG.Entities.Heroes
@@ -101,7 +103,7 @@ namespace MAPZ_lab_RPG.Entities.Heroes
         public int GetUpgradePoints(){
             return hero.UpgradePoints;
         }
-        public double GetInventory(){
+        public List<IItem> GetInventory(){
             return hero.Inventory;
         }
         private IHero hero {get; set;}

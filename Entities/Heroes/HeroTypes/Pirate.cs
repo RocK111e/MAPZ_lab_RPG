@@ -18,24 +18,24 @@ namespace MAPZ_lab_RPG.Entities.Heroes.HeroTypes
             Experience = 0;
             Level = 1;
             UpgradePoints = 0;
-            Inventory = new List<Item>();
+            Inventory = new List<IItem>();
         }
 
-        public override double Atack()
+        public double Atack()
         {
             System.Console.Out.WriteLine("Pirate is slashing with cutlass");
             return Damage;
         }
 
-        public override double TakeDamage(double damageTaken)
+        public double TakeDamage(double damageTaken)
         {
-            damage = damageTaken / (1 + (Armor / 100));
+            double damage = damageTaken / (1 + (Armor / 100));
             CurrentHealth -= damage;
             System.Console.Out.WriteLine("Pirate is being attacked");
             return CurrentHealth;
         }
 
-        public override int AddCoins(int coins)
+        public int AddCoins(int coins)
         {
             Coins += (int)(coins * 1.25);
             return Coins;
@@ -69,7 +69,7 @@ namespace MAPZ_lab_RPG.Entities.Heroes.HeroTypes
         public int Coins { get; set; }
         public int Experience { get; set; }
         public int Level { get; set; }
-        public int LevelPoints{ get; set; }
-        public List<Item> Inventory { get; set; }
+        public int UpgradePoints{ get; set; }
+        public List<IItem> Inventory { get; set; }
     }
 }
