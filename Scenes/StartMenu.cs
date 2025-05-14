@@ -8,7 +8,7 @@ public partial class StartMenu : Control
     private Button _pirateButton;
 
     // Path to your battle scene
-    private const string BattleScenePath = "res://BattleScene.tscn"; // IMPORTANT: Update this path!
+    private const string BattleScenePath = "res://Scenes/BattleScene.tscn"; // IMPORTANT: Update this path!
 
     public override void _Ready()
     {
