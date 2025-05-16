@@ -2,11 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MAPZ_lab_RPG.Entities;
 
 namespace MAPZ_lab_RPG.Entities.Enemies
 {
     //Tank
-    public class Ork : IEnemy
+    public class Ork : IEntity
     {
         public Ork(int level){
             Health = 200 + 20 * level;
@@ -29,7 +30,7 @@ namespace MAPZ_lab_RPG.Entities.Enemies
         public string Race { get; private set; }
     }
     //Damager
-    public class Goblin : IEnemy
+    public class Goblin : IEntity
     {
         public Goblin(int level){
             Health = 75 + 10 * level;
@@ -52,7 +53,7 @@ namespace MAPZ_lab_RPG.Entities.Enemies
         public string Race { get; private set; }
     }
     //Normis
-    public class Troll : IEnemy
+    public class Troll : IEntity
     {
         public Troll(int level){
             Health = 100 + 15 * level;

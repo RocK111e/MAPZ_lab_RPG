@@ -6,6 +6,7 @@ using System.Linq; // Needed for LINQ checks like Any() or All()
 using MAPZ_lab_RPG.Entities.Heroes;
 using MAPZ_lab_RPG.Entities.Enemies;
 using MAPZ_lab_RPG.Entities.Items;
+using MAPZ_lab_RPG.Entities;
 
 public partial class Main : Node // Ensure it doesn't have a namespace or matches Godot's expectation
 {
@@ -34,14 +35,14 @@ public partial class Main : Node // Ensure it doesn't have a namespace or matche
 	private Dictionary<string, PackedScene> _enemyPrefabs = new Dictionary<string, PackedScene>();
 
 	// Temporary storage for linking scene nodes to enemy data
-	private Dictionary<Node, IEnemy> _enemyNodes = new Dictionary<Node, IEnemy>();
+	private Dictionary<Node, IEntity> _enemyNodes = new Dictionary<Node, IEntity>();
 	#endregion
 
 	#region Game State
 	private enum GameState { PreGame, Combat, Shop, GameOver }
 	private GameState currentState = GameState.PreGame;
 	private int currentLevel = 0;
-	private List<IEnemy> currentEnemies = new List<IEnemy>();
+	private List<IEntity> currentEnemies = new List<IEntity>();
 	private List<IItem> shopItems = new List<IItem>();
 	private Dictionary<string, int> itemPrices = new Dictionary<string, int>();
 	#endregion
@@ -138,7 +139,7 @@ public partial class Main : Node // Ensure it doesn't have a namespace or matche
 		ClearEnemyVisuals();
 
 		// Create logical enemies
-		var enemyCreatorInstance = EnemyCreator.Instance;
+		var enemyCreatorInstance = EnemyManager.Instance;
 		try
 		{
 			currentEnemies = enemyCreatorInstance.CreateEnemies(currentLevel);
@@ -169,30 +170,6 @@ public partial class Main : Node // Ensure it doesn't have a namespace or matche
 		heroInstance.AddExperience(experienceGained);
 		int totalCoins = heroInstance.AddCoins(coinsGained);
 		GD.Print($"Rewards: +{experienceGained} XP, +{coinsGained} Coins. Total Coins: {totalCoins}"); // Use returned value
-
-		EnterShopPhase();
-	}
-
-	public void EnterShopPhase()
-	{
-		currentState = GameState.Shop;
-		GD.Print("--- Entering Shop ---");
-		shopItems.Clear();
-
-		// Populate shopItems list (as before)
-		var itemManager = ItemManager.Instance;
-		try
-		{
-			shopItems.Add(itemManager.CreateItem("HealthRune"));
-			shopItems.Add(itemManager.CreateItem("DamageRune"));
-			shopItems.Add(itemManager.CreateItem("ArmorRune"));
-		}
-		catch (Exception ex) { GD.PrintErr($"Error creating shop items: {ex.Message}"); }
-
-		// Update UI for Shop state
-		_combatView.Hide();
-		_shopView.Show();
-		UpdateShopUI(); // Populate item list and update coin display
 	}
 
 	 public void ExitShopPhase()
@@ -269,7 +246,7 @@ public partial class Main : Node // Ensure it doesn't have a namespace or matche
 		foreach (var kvp in _enemyNodes)
 		{
 			Node enemyNode = kvp.Key;
-			IEnemy enemyData = kvp.Value;
+			IEntity enemyData = kvp.Value;
 			// Find the HP label within the enemy node's scene structure
 			// Adjust the path "StatusUI/HPLabel" if your enemy scene structure is different!
 			var hpLabel = enemyNode.GetNode<Label>("StatusUI/HPLabel"); // Adjust path if needed!
@@ -366,7 +343,7 @@ public partial class Main : Node // Ensure it doesn't have a namespace or matche
 
 		for (int i = 0; i < currentEnemies.Count; i++)
 		{
-			IEnemy enemyData = currentEnemies[i];
+			IEntity enemyData = currentEnemies[i];
 
 			if (_enemyPrefabs.TryGetValue(enemyData.Race, out PackedScene prefab))
 			{
@@ -432,7 +409,7 @@ public partial class Main : Node // Ensure it doesn't have a namespace or matche
 		// Use a timer or sequence for clarity in a real game
 		foreach (var kvp in _enemyNodes) // Iterate through VISIBLE enemies linked to data
 		{
-			IEnemy enemy = kvp.Value;
+			IEntity enemy = kvp.Value;
 			Node enemyNode = kvp.Key;
 
 			if (enemy.Health > 0) // Only living enemies act
@@ -475,7 +452,7 @@ public partial class Main : Node // Ensure it doesn't have a namespace or matche
 	/// Logic for when the hero attacks an enemy.
 	/// Needs target selection mechanism.
 	/// </summary>
-	public void HeroAttacksEnemy(IEnemy targetEnemy) // Pass the actual IEnemy data
+	public void HeroAttacksEnemy(IEntity targetEnemy) // Pass the actual IEnemy data
 	{
 		if (currentState != GameState.Combat || targetEnemy == null || targetEnemy.Health <= 0)
 		{
@@ -538,7 +515,7 @@ public partial class Main : Node // Ensure it doesn't have a namespace or matche
 		GD.Print("Attack Button Pressed");
 
 		// --- Target Selection (Simple: First living enemy) ---
-		IEnemy target = null;
+		IEntity target = null;
 		foreach (var enemy in currentEnemies)
 		{
 			if (enemy.Health > 0)

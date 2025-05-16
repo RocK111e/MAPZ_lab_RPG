@@ -64,6 +64,10 @@ namespace MAPZ_lab_RPG.Entities.Heroes
         {
             return hero.AddCoins(coins);
         }
+        public int SpendCoins(int coins)
+        {
+            return hero.SpendCoins(coins);
+        }
         public void AddExperience(int experience)
         {
             hero.AddExperience(experience);
