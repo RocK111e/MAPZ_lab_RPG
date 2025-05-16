@@ -8,7 +8,7 @@ namespace MAPZ_lab_RPG.Entities.Enemies
     public interface IEnemy
     {
         double Attack();
-        double GetDamage(double damageTaken);
+        double TakeDamage(double damageTaken);
         double Health { get; }
         double Damage { get; }
         double Armor { get; }

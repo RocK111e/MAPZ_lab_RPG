@@ -1,9 +1,10 @@
 using MAPZ_lab_RPG.Entities.Items;
+using MAPZ_lab_RPG.Entities.Heroes;
+using System;
+using System.Collections.Generic;
 
 namespace MAPZ_lab_RPG.Entities.Heroes.HeroTypes
 {
-    using MAPZ_lab_RPG.Entities.Heroes;
-    using System;
 
     public class Archer : IHero
     {
@@ -17,38 +18,24 @@ namespace MAPZ_lab_RPG.Entities.Heroes.HeroTypes
             Coins = 0;
             Experience = 0;
             Level = 1;
-            LevelPoints = 0;
-            Inventory = new List<Item>();
+            UpgradePoints = 0;
+            Inventory = new List<IItem>();
         }
 
-        public float Atack()
+        public double Atack()
         {
             System.Console.Out.WriteLine("Archer is shooting");
             return Damage;
         }
 
-        public float GetDamage(float damage)
+        public double TakeDamage(double damageTaken)
         {
-            damage = damage / (1 + (Armor / 100));
+            double damage = damageTaken / (1 + (Armor / 100));
             CurrentHealth -= damage;
             System.Console.Out.WriteLine("Archer is being atacked");
             return CurrentHealth;
         }
 
-        public float Heal(float healAmount)
-        {
-            CurrentHealth += healAmount;
-            if (CurrentHealth > MaxHealth)
-            {
-                CurrentHealth = MaxHealth;
-            }
-            return CurrentHealth;
-        }
-        public void LevelUp()
-        {
-            Level++;
-            LevelPoints++;
-        }
         public void Upgrade(string attribute)
         {
             switch (attribute)
@@ -68,15 +55,15 @@ namespace MAPZ_lab_RPG.Entities.Heroes.HeroTypes
             }
         }
         public string Name { get; set; }
-        public float MaxHealth { get; set; }
-        public float CurrentHealth { get; set; }
-        public float Damage { get; set; }
-        public float Armor { get; set; }
+        public double MaxHealth { get; set; }
+        public double CurrentHealth { get; set; }
+        public double Damage { get; set; }
+        public double Armor { get; set; }
 
         public int Coins { get; set; }
         public int Experience { get; set; }
         public int Level { get; set; }
-        public int LevelPoints{ get; set; }
-        public List<Item> Inventory { get; set; }
+        public int UpgradePoints{ get; set; }
+        public List<IItem> Inventory { get; set; }
     }
 }

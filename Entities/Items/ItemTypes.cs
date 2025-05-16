@@ -7,52 +7,51 @@ namespace MAPZ_lab_RPG.Entities.Items
 {
     public class HealthRune : Item
     {
-        public HealthRune(string name, string description, double health)
-            : base(name, description, health, 0.0, 0.0)
-        {}
+        public HealthRune(double health) : base("HealthRune", "Gives additional Health", health, 0.0, 0.0)
+        {
+        }
 
         public override IItem Copy()
         {
-            return new HealthRune(Name, Description, Damage);
+            return new HealthRune(Health);
         }
     }
     public class DamageRune : Item
     {
-        public DamageRune(string name, string description, double damage)
-            : base(name, description, 0.0, damage, 0.0)
-        {}
+        public DamageRune(double damage) : base("DamageRune", "Gives additional Damage", 0.0, damage, 0.0)
+        {
+        }
 
         public override IItem Copy()
         {
-            return new DamageRune(Name, Description, Damage);
+            return new DamageRune(Damage);
         }
     }
     public class ArmorRune : Item
     {
-        public ArmorRune(string name, string description, double armor)
-            : base(name, description, 0.0, 0.0, armor)
+        public ArmorRune(double armor) : base("ArmorRune", "Gives additional Armor", 0.0, 0.0, armor)
         {
         }
 
         public override IItem Copy()
         {
-            return new ArmorRune(Name, Description, Armor);
+            return new ArmorRune(Armor);
         }
     }
-    public class ItemPrototypeManager
+    public class ItemManager
     {
-        private static readonly ItemPrototypeManager _instance = new ItemPrototypeManager();
+        private static readonly ItemManager _instance = new ItemManager();
         private readonly Dictionary<string, IItem> _prototypes;
 
-        public static ItemPrototypeManager Instance => _instance;
+        public static ItemManager Instance => _instance;
 
-        private ItemPrototypeManager()
+        private ItemManager()
         {
             _prototypes = new Dictionary<string, IItem>
             {
-                { "HealthRune", new HealthRune("Health Rune", "Gives additional Health", 20.0) },
-                { "DamageRune", new DamageRune("Damage Rune", "Gives additional Damage", 5.0) },
-                { "ArmorRune", new ArmorRune("Armor Rune", "Gives additional Armor", 2.5) }
+                { "HealthRune", new HealthRune(20.0) },
+                { "DamageRune", new DamageRune(5.0) },
+                { "ArmorRune", new ArmorRune(2.5) }
             };
         }
 

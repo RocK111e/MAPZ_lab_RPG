@@ -13,18 +13,19 @@ namespace MAPZ_lab_RPG.Entities.Enemies
             Armor = 5;
             Race = "Ork";
         }
-        public float Atack(){
+        public double Atack(){
             System.Console.Out.WriteLine("Enemy is atacking");
             return Damage;
         }
-        public float GetDamage(float Damage){
-            Health = Health - Damage;
+        public double TakeDamage(double damageTaken){
+            double damage = damageTaken / (1 + (Armor / 100));
+            Health -= damage;
             System.Console.Out.WriteLine("Enemy is being atacked");
             return Health;
         }
-        public float Health {get; set;}
-        public float Damage {get; set;}
-        public float Armor {get; set;}
+        public double Health {get; set;}
+        public double Damage {get; set;}
+        public double Armor {get; set;}
         public string Race {get; set;}
     }
 }

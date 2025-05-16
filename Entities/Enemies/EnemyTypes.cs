@@ -18,7 +18,7 @@ namespace MAPZ_lab_RPG.Entities.Enemies
             System.Console.Out.WriteLine("Ork is atacking");
             return Damage;
         }
-        public double GetDamage(double damageTaken){
+        public double TakeDamage(double damageTaken){
             Health = Health - damageTaken;
             System.Console.Out.WriteLine("Ork is being atacked");
             return Health;
@@ -41,7 +41,7 @@ namespace MAPZ_lab_RPG.Entities.Enemies
             System.Console.Out.WriteLine("Goblin is atacking");
             return Damage;
         }
-        public double GetDamage(double damageTaken){
+        public double TakeDamage(double damageTaken){
             Health = Health - damageTaken;
             System.Console.Out.WriteLine("Goblin is being atacked");
             return Health;
@@ -64,7 +64,7 @@ namespace MAPZ_lab_RPG.Entities.Enemies
             System.Console.Out.WriteLine("Troll is atacking");
             return Damage;
         }
-        public double GetDamage(double damageTaken){
+        public double TakeDamage(double damageTaken){
             Health = Health - damageTaken;
             System.Console.Out.WriteLine("Troll is being atacked");
             return Health;
