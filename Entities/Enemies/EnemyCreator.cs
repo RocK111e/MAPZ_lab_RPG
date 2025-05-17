@@ -5,16 +5,16 @@ using System.Threading.Tasks;
 
 namespace MAPZ_lab_RPG.Entities.Enemies
 {
-    public class EnemyManager
+    public class EnemyCreator
     {
-        private static readonly EnemyManager _instance = new EnemyManager();
+        private static readonly EnemyCreator _instance = new EnemyCreator();
 
-        public static EnemyManager Instance
+        public static EnemyCreator Instance
         {
             get { return _instance; }
         }
 
-        private EnemyManager()
+        private EnemyCreator()
         {
             enemyFactories = new List<EnemyFactory>()
             {
