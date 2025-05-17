@@ -1,11 +1,13 @@
 // BattleScene.cs
 using Godot;
-using Scenes.Entity;
+using Scenes.Managers;
 
 public partial class BattleScene : Node2D // Or Control, or whatever your root node type is
 {
 	private Label _heroDisplayLabel;
 	private Node2D _heroDisplayNode;
+	
+	private MainHeroManager _mainHeroManager;
 
 	public override void _Ready()
 	{
@@ -19,8 +21,10 @@ public partial class BattleScene : Node2D // Or Control, or whatever your root n
 
 		_heroDisplayNode = GD.Load<PackedScene>("res://Scenes/Entity.tscn").Instantiate<Node2D>();
 		AddChild(_heroDisplayNode);
-		_heroDisplayNode.Position = new Vector2(100, 100); // Set position as needed
+		_heroDisplayNode.Position = new Vector2(300, 150); // Set position as needed
 		_heroDisplayNode.Name = "HeroDisplayNode"; // Set a name for the node
+
+		_mainHeroManager = new MainHeroManager(_heroDisplayNode, selectedHero);
 	}
 
 }
