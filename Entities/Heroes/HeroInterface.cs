@@ -40,6 +40,11 @@ namespace MAPZ_lab_RPG.Entities.Heroes{
             Coins += coins;
             return Coins;
         }
+        public int SpendCoins(int coins)
+        {
+            Coins -= coins;
+            return Coins;
+        }
         public int Experience { get; set; }
         public void AddExperience(int experience)
         {

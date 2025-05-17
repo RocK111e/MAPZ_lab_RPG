@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MAPZ_lab_RPG.Entities.Enemies
+namespace MAPZ_lab_RPG.Entities
 {
-    public interface IEnemy
+    public interface IEntity
     {
         double Attack();
         double TakeDamage(double damageTaken);
@@ -14,5 +14,4 @@ namespace MAPZ_lab_RPG.Entities.Enemies
         double Armor { get; }
         string Race { get; }
     }
-
 }

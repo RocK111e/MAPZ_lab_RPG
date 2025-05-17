@@ -5,24 +5,16 @@ using System.Threading.Tasks;
 
 namespace MAPZ_lab_RPG.Entities.Items
 {
-    public interface IItem
-    {
-        string Name { get; }
-        string Description { get; }
-        double Health { get; }
-        double Damage { get; }
-        double Armor { get; }
-        IItem Copy();
-    }
     public abstract class Item : IItem
     {
-        protected Item(string name, string description, double health, double damage, double armor)
+        protected Item(string name, string description, double health, double damage, double armor, int price)
         {
             Name = name;
             Description = description;
             Health = health;
             Damage = damage;
             Armor = armor;
+            Price = price;
         }
 
         public string Name { get; protected set; }
@@ -30,6 +22,8 @@ namespace MAPZ_lab_RPG.Entities.Items
         public double Health { get; protected set; }
         public double Damage { get; protected set; }
         public double Armor { get; protected set; }
+        public int Price { get; protected set; }
+
         public abstract IItem Copy();
     }
 }
