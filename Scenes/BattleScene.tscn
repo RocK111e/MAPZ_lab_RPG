@@ -5,9 +5,63 @@
 [node name="Node2D" type="Node2D"]
 script = ExtResource("1_ttbo7")
 
-[node name="HDL" type="Label" parent="."]
-offset_left = 570.0
-offset_top = 323.0
-offset_right = 618.0
-offset_bottom = 346.0
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1152.0
+offset_bottom = 648.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -2.0
+offset_right = 2.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Control/VBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+alignment = 1
+
+[node name="RoundLabel" type="Label" parent="Control/VBoxContainer/HBoxContainer"]
+layout_mode = 2
 text = "dfdfdf"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="Control/VBoxContainer"]
+custom_minimum_size = Vector2(576, 540)
+layout_mode = 2
+
+[node name="CenterContainer" type="CenterContainer" parent="Control/VBoxContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(571, 0)
+layout_mode = 2
+
+[node name="Button" type="Button" parent="Control/VBoxContainer/HBoxContainer2/CenterContainer"]
+layout_mode = 2
+text = "Hero
+"
+
+[node name="CenterContainer2" type="CenterContainer" parent="Control/VBoxContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(571, 0)
+layout_mode = 2
+
+[node name="Button" type="Button" parent="Control/VBoxContainer/HBoxContainer2/CenterContainer2"]
+layout_mode = 2
+text = "Enemy
+"
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="Control/VBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+theme_override_constants/separation = 50
+alignment = 1
+
+[node name="MoneyLabel" type="Label" parent="Control/VBoxContainer/HBoxContainer3"]
+layout_mode = 2
+text = "Money: ___"
+
+[node name="LevelLabel" type="Label" parent="Control/VBoxContainer/HBoxContainer3"]
+layout_mode = 2
+text = "Level: ___"
