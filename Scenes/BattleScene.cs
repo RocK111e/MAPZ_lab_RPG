@@ -11,20 +11,23 @@ public partial class BattleScene : Node2D // Or Control, or whatever your root n
 
 	public override void _Ready()
 	{
-		GD.Print("BattleScene ready!");
-		_heroDisplayLabel = GetNode<Label>("HDL");
-		GD.Print($"Label found! {_heroDisplayLabel.Name}");
+		// GD.Print("BattleScene ready!");
+		// _heroDisplayLabel = GetNode<Label>("HDL");
+		// GD.Print($"Label found! {_heroDisplayLabel.Name}");
 
 		string selectedHero = GameData.SelectedHeroName;
-		GD.Print($"Selected hero: {selectedHero.ToString()}");
-		_heroDisplayLabel.Text = $"Selected Hero: {selectedHero}";
+		// GD.Print($"Selected hero: {selectedHero.ToString()}");
+		// _heroDisplayLabel.Text = $"Selected Hero: {selectedHero}";
 
 		_heroDisplayNode = GD.Load<PackedScene>("res://Scenes/Entity.tscn").Instantiate<Node2D>();
+		GetNode<CenterContainer>("Control/VBoxContainer/HBoxContainer2/CenterContainer").AddChild(_heroDisplayNode);
 		AddChild(_heroDisplayNode);
-		_heroDisplayNode.Position = new Vector2(300, 150); // Set position as needed
 		_heroDisplayNode.Name = "HeroDisplayNode"; // Set a name for the node
 
-		_mainHeroManager = new MainHeroManager(_heroDisplayNode, selectedHero);
+		var MoneyLabel = GetNode<Label>("Control/VBoxContainer/HBoxContainer3/MoneyLabel");
+		var LevelLabel = GetNode<Label>("Control/VBoxContainer/HBoxContainer3/LevelLabel");
+
+		_mainHeroManager = new MainHeroManager(_heroDisplayNode, selectedHero, MoneyLabel, LevelLabel);
 	}
 
 }
