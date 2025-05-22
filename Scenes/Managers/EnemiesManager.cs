@@ -71,6 +71,7 @@ namespace Scenes.Managers
                 Label nameLabel = enemyVisualInstance.GetNode<Label>("VBoxContainer/CenterContainer/Label");
                 ProgressBar healthBar = enemyVisualInstance.GetNode<ProgressBar>("VBoxContainer/CenterContainer3/ProgressBar");
                 Label hpTextLabel = enemyVisualInstance.GetNode<Label>("VBoxContainer/CenterContainer3/ProgressBar/HPLabel");
+                TextureRect icon = enemyVisualInstance.GetNode<TextureRect>("VBoxContainer/CenterContainer2/TextureRect");
 
                 if (nameLabel == null || healthBar == null || hpTextLabel == null)
                 {
@@ -83,6 +84,10 @@ namespace Scenes.Managers
                 healthBar.MaxValue = enemy.Health;
                 healthBar.Value = enemy.Health;
                 hpTextLabel.Text = $"{enemy.Health:F0} / {healthBar.MaxValue:F0}";
+
+                string texturePath = $"res://Assets/{enemy.Race.ToLower()}.jpg";
+                Texture2D texture = GD.Load<Texture2D>(texturePath);
+                icon.Texture = texture;
 
                 // Ensure Entity.tscn's root Control has Container Sizing flags set appropriately
                 // (e.g., Horizontal/Vertical: Shrink Center or Expand Fill) to behave in the grid.
