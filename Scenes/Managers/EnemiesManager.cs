@@ -86,35 +86,13 @@ namespace Scenes.Managers
 
                 // Ensure Entity.tscn's root Control has Container Sizing flags set appropriately
                 // (e.g., Horizontal/Vertical: Shrink Center or Expand Fill) to behave in the grid.
-
-                Area2D clickableArea = enemyVisualInstance.GetNode<Area2D>("Area2D");
-                if (clickableArea != null)
-                {
-                    clickableArea.InputEvent += (viewport, eventArgs, shapeIdx) =>
-                        HandleEnemyInput(viewport, eventArgs, shapeIdx, enemy, enemyVisualInstance);
-                }
-                else
-                {
-                    GD.PrintErr($"EnemiesManager: 'Area2D' node not found in Entity.tscn for {enemy.Race}. Not clickable.");
-                }
+                enemyVisualInstance.GuiInput += (InputEvent @event) => OnEnemyClick(@event, enemy, enemyVisualInstance);
 
                 // Add to the GridContainer. Positioning is handled by the container.
                 _enemyPlacementNode.AddChild(enemyVisualInstance);
                 _enemyVisualsMap.Add(enemy, enemyVisualInstance);
 
                 GD.Print($"EnemiesManager: Added {enemy.Race} to parent container. Global position will be determined by container.");
-            }
-        }
-
-        private void HandleEnemyInput(Node viewport, InputEvent eventArgs, long shapeIdx, IEntity enemy, Control visual)
-        {
-            if (eventArgs is InputEventMouseButton mouseButtonEvent)
-            {
-                if (mouseButtonEvent.ButtonIndex == MouseButton.Left && mouseButtonEvent.Pressed)
-                {
-                    GD.Print($"EnemiesManager: Clicked on enemy visual for {enemy.Race}");
-                    OnEnemyVisualClicked?.Invoke(enemy, visual);
-                }
             }
         }
 
@@ -176,6 +154,14 @@ namespace Scenes.Managers
             _enemyVisualsMap.Clear();
             _activeEnemies.Clear();
             GD.Print("EnemiesManager cleaned up.");
+        }
+
+        private void OnEnemyClick(InputEvent @event, IEntity enemy, Control enemyVisual)
+        {
+            if (@event is InputEventMouseButton mouseEvent && mouseEvent.Pressed && mouseEvent.ButtonIndex == MouseButton.Left)
+            {
+                OnEnemyVisualClicked?.Invoke(enemy, enemyVisual);
+            }
         }
     }
 }

@@ -10,8 +10,8 @@ namespace MAPZ_lab_RPG.Entities.Enemies
     public class Ork : IEntity
     {
         public Ork(int level){
-            Health = 200 + 20 * level;
-            Damage = 5 + 0.5 * level;
+            Health = 40 + 4 * level;
+            Damage = 1 + 0.25 * level;
             Armor = 8 + 1 * level;
             Race = "Ork";
         }
@@ -33,8 +33,8 @@ namespace MAPZ_lab_RPG.Entities.Enemies
     public class Goblin : IEntity
     {
         public Goblin(int level){
-            Health = 75 + 10 * level;
-            Damage = 15 + 1.5 * level;
+            Health = 15 + 5 * level;
+            Damage = 3 + 0.3 * level;
             Armor = 3 + 0.5 * level;
             Race = "Goblin";
         }
@@ -56,8 +56,8 @@ namespace MAPZ_lab_RPG.Entities.Enemies
     public class Troll : IEntity
     {
         public Troll(int level){
-            Health = 100 + 15 * level;
-            Damage = 10 + 1 * level;
+            Health = 20 + 3 * level;
+            Damage = 2.5 + 0.25 * level;
             Armor = 5 + 1 * level;
             Race = "Trol";
         }

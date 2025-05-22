@@ -26,7 +26,7 @@ public partial class BattleScene : Node2D
 	public override void _Ready()
 	{
 		// --- Hero Setup ---
-		string selectedHero = GameData.SelectedHeroName ?? "Archer";
+		string selectedHero = GameData.SelectedHeroName;
 		if (GameData.SelectedHeroName == null) GD.PrintRich("[color=yellow]BattleScene Warning: GameData.SelectedHeroName is null. Defaulting to 'Archer'.[/color]");
 
 		_heroDisplayNode = GD.Load<PackedScene>("res://Scenes/Entity.tscn").Instantiate<Control>();
