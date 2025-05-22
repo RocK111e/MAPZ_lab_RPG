@@ -38,7 +38,7 @@ public partial class BattleScene : Node2D
 		_moneyLabel = GetNode<Label>("Control/VBoxContainer/HBoxContainer3/MoneyLabel");
 		_levelLabel = GetNode<Label>("Control/VBoxContainer/HBoxContainer3/LevelLabel");
 		if (_moneyLabel == null || _levelLabel == null) { GD.PrintErr("BattleScene: MoneyLabel or LevelLabel not found!"); GetTree().Quit(); return; }
-		_mainHeroManager = new MainHeroManager(_heroDisplayNode, selectedHero, _moneyLabel, _levelLabel);
+		_mainHeroManager = GameData.MainHeroManager ?? new MainHeroManager(_heroDisplayNode, selectedHero, _moneyLabel, _levelLabel);
 		GD.Print("MainHeroManager initialized.");
 
 		// --- Enemies Setup ---
@@ -49,7 +49,7 @@ public partial class BattleScene : Node2D
 		// Configure GridContainer columns in the Godot Editor inspector for EnemyGridContainer.
 		// Example: _enemyPlaceholderNode.Columns = 3; // Or set this in the editor.
 
-		int currentBattleLevel = 1;
+		int currentBattleLevel = GameData.CurrentRound;
 		_enemiesManager = new EnemiesManager(_enemyPlaceholderNode, currentBattleLevel);
 		GD.Print($"EnemiesManager initialized. Enemies placed into GridContainer: {_enemyPlaceholderNode.GetPath()}");
 
@@ -189,6 +189,9 @@ public partial class BattleScene : Node2D
 			AddChild(victoryLabel);
 			GD.PrintErr("Could not find 'Control' node to add VictoryLabel. Added to BattleScene root.");
 		}
+
+		GameData.CurrentRound++;
+		GetTree().ChangeSceneToFile("res://Scenes/Shop.tscn");
 	}
 
 	public override void _ExitTree()
