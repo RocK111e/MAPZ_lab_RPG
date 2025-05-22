@@ -25,6 +25,8 @@ public partial class BattleScene : Node2D
 
 	public override void _Ready()
 	{
+		var RoundLabel = GetNode<Label>("Control/VBoxContainer/HBoxContainer/RoundLabel");
+		RoundLabel.Text = $"Round: {GameData.CurrentRound}";
 		// --- Hero Setup ---
 		string selectedHero = GameData.SelectedHeroName;
 		if (GameData.SelectedHeroName == null) GD.PrintRich("[color=yellow]BattleScene Warning: GameData.SelectedHeroName is null. Defaulting to 'Archer'.[/color]");
@@ -40,6 +42,8 @@ public partial class BattleScene : Node2D
 		if (_moneyLabel == null || _levelLabel == null) { GD.PrintErr("BattleScene: MoneyLabel or LevelLabel not found!"); GetTree().Quit(); return; }
 		_mainHeroManager = GameData.MainHeroManager ?? new MainHeroManager(_heroDisplayNode, selectedHero, _moneyLabel, _levelLabel);
 		GD.Print("MainHeroManager initialized.");
+		GameData.MainHeroManager = _mainHeroManager;
+		_mainHeroManager.SetNodes(_heroDisplayNode, _moneyLabel, _levelLabel);
 
 		// --- Enemies Setup ---
 		// Path to the GridContainer (previously CenterContainer2, now changed type and renamed)
