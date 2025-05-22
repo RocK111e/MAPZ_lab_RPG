@@ -1,215 +1,204 @@
 // BattleScene.cs
 using Godot;
 using Scenes.Managers;
-using MAPZ_lab_RPG.Entities; // Required for IEntity if you use it directly in BattleScene
-using System.Collections.Generic; // For List<IEntity>
-using System; // For Random (optional, if used directly here)
+using MAPZ_lab_RPG.Entities;
+using System.Collections.Generic;
+using System;
 
-public partial class BattleScene : Node2D // Or Control, or whatever your root node type is
+public partial class BattleScene : Node2D // Or whatever your root node type is
 {
-	// Hero related nodes and manager
-	private Node2D _heroDisplayNode;
+	// Hero related
+	private Control _heroDisplayNode; // Changed from Node2D to Control
 	private MainHeroManager _mainHeroManager;
 
-	// Enemy related nodes and manager
-	// Corrected type for the placeholder node
-	private Control _enemyPlaceholderNode; // CenterContainer is a Control.
+	// Enemy related
+	private Control _enemyPlaceholderNode; // The parent where enemy visuals are added
 	private EnemiesManager _enemiesManager;
 
 	// UI Labels
 	private Label _moneyLabel;
 	private Label _levelLabel;
 
-	// Example: For turn management or triggering actions
-	private Button _attackButton;
+	// Targeting
+	private IEntity _selectedEnemyTarget;
+	private Control _selectedEnemyVisual; // To store the visual of the selected enemy
+	private Control _previouslySelectedVisual; // For de-highlighting
 
 	public override void _Ready()
 	{
 		// --- Hero Setup ---
-		// Ensure GameData.SelectedHeroName is set before this scene loads
-		string selectedHero = GameData.SelectedHeroName ?? "Archer"; // Fallback if null for testing
-		if (GameData.SelectedHeroName == null)
-		{
-			GD.PrintRich("[color=yellow]BattleScene Warning: GameData.SelectedHeroName is null. Defaulting to 'Archer'.[/color]");
-		}
+		string selectedHero = GameData.SelectedHeroName ?? "Archer"; // Fallback for testing
+		if (GameData.SelectedHeroName == null) GD.PrintRich("[color=yellow]BattleScene Warning: GameData.SelectedHeroName is null. Defaulting to 'Archer'.[/color]");
 
-
-		_heroDisplayNode = GD.Load<PackedScene>("res://Scenes/Entity.tscn").Instantiate<Node2D>();
+		// Instantiate Entity.tscn (root Control) for the hero display
+		_heroDisplayNode = GD.Load<PackedScene>("res://Scenes/Entity.tscn").Instantiate<Control>();
 
 		var heroContainer = GetNode<CenterContainer>("Control/VBoxContainer/HBoxContainer2/CenterContainer");
-		if (heroContainer == null)
-		{
-			GD.PrintErr("BattleScene: Hero container node 'Control/VBoxContainer/HBoxContainer2/CenterContainer' not found! Ensure the path is correct in your scene tree.");
-			GetTree().Quit(); // Critical error, can't proceed
-			return;
-		}
+		if (heroContainer == null) { GD.PrintErr("BattleScene: Hero container node 'Control/VBoxContainer/HBoxContainer2/CenterContainer' not found!"); GetTree().Quit(); return; }
 		heroContainer.AddChild(_heroDisplayNode);
 		_heroDisplayNode.Name = "HeroDisplayNode";
 
 		_moneyLabel = GetNode<Label>("Control/VBoxContainer/HBoxContainer3/MoneyLabel");
 		_levelLabel = GetNode<Label>("Control/VBoxContainer/HBoxContainer3/LevelLabel");
+		if (_moneyLabel == null || _levelLabel == null) { GD.PrintErr("BattleScene: MoneyLabel or LevelLabel not found!"); GetTree().Quit(); return; }
 
-		if (_moneyLabel == null || _levelLabel == null)
-		{
-			GD.PrintErr("BattleScene: MoneyLabel or LevelLabel not found! Ensure paths are correct.");
-			GetTree().Quit(); // Critical error
-			return;
-		}
-
+		// MainHeroManager constructor now correctly receives a Control node
 		_mainHeroManager = new MainHeroManager(_heroDisplayNode, selectedHero, _moneyLabel, _levelLabel);
 		GD.Print("MainHeroManager initialized.");
 
 		// --- Enemies Setup ---
-		// Corrected GetNode<T> type to match the actual node type in the scene
 		_enemyPlaceholderNode = GetNode<CenterContainer>("Control/VBoxContainer/HBoxContainer2/CenterContainer2");
-		// Ensure "CenterContainer2" is indeed a CenterContainer in your scene.
-		// If it's a different type of Control or Node2D, adjust GetNode<T> and the field type accordingly.
+		if (_enemyPlaceholderNode == null) { GD.PrintErr("BattleScene: Enemy placeholder node 'Control/VBoxContainer/HBoxContainer2/CenterContainer2' not found!"); GetTree().Quit(); return; }
 
-		if (_enemyPlaceholderNode == null)
-		{
-			GD.PrintErr("BattleScene: Enemy placeholder node 'Control/VBoxContainer/HBoxContainer2/CenterContainer2' not found! Ensure the path is correct.");
-			GetTree().Quit(); // Critical error
-			return;
-		}
-
-		int currentBattleLevel = 1; // Example level, make this dynamic later
+		int currentBattleLevel = 1; // Example level
 		_enemiesManager = new EnemiesManager(_enemyPlaceholderNode, currentBattleLevel);
-		GD.Print($"EnemiesManager initialized for level {currentBattleLevel}. Enemies placed under: {_enemyPlaceholderNode.GetPath()}");
+		GD.Print($"EnemiesManager initialized. Enemies placed under: {_enemyPlaceholderNode.GetPath()}");
 
 		_enemiesManager.OnEnemyDefeated += HandleAnEnemyDefeated;
 		_enemiesManager.OnAllEnemiesDefeated += HandleAllEnemiesDefeated;
+		_enemiesManager.OnEnemyVisualClicked += HandleEnemyClicked; // Subscribe to click event
 
-		// --- UI & Interaction Setup (Example) ---
-		// Ensure you have an "AttackButton" node at this path or update the path.
-		_attackButton = GetNodeOrNull<Button>("Control/AttackButton");
-		if (_attackButton != null)
+		if (!_enemiesManager.HasActiveEnemies() && _mainHeroManager.IsHeroAlive())
 		{
-			_attackButton.Pressed += OnAttackButtonPressed;
-			_attackButton.Disabled = !_enemiesManager.HasActiveEnemies();
-		}
-		else
-		{
-			GD.PrintRich("[color=yellow]BattleScene Warning: AttackButton node at 'Control/AttackButton' not found. Player attack via UI will not be available.[/color]");
-		}
-
-		if (!_enemiesManager.HasActiveEnemies() && _mainHeroManager.IsHeroAlive()) // If hero is alive but no enemies
-		{
-			 GD.Print("BattleScene: No enemies to fight from the start.");
-			 HandleAllEnemiesDefeated(); // Or some other logic for instant win/no combat
+			GD.Print("BattleScene: No enemies to fight from the start.");
+			HandleAllEnemiesDefeated();
 		}
 	}
 
-	private void OnAttackButtonPressed()
+	private void HandleEnemyClicked(IEntity enemy, Control visual)
 	{
-		if (_mainHeroManager == null || _enemiesManager == null)
+		if (!_mainHeroManager.IsHeroAlive() || !_enemiesManager.HasActiveEnemies() || enemy.Health <= 0)
 		{
-			GD.PrintErr("Attack pressed but managers not initialized!");
+			GD.Print("Cannot select target: Hero defeated, no active enemies, or target is already defeated.");
 			return;
 		}
 
+		GD.Print($"BattleScene: Clicked! Target: {enemy.Race}");
+
+		if (_previouslySelectedVisual != null && IsInstanceValid(_previouslySelectedVisual) && _previouslySelectedVisual != visual)
+		{
+			_previouslySelectedVisual.Modulate = Colors.White; // Reset tint of old selection
+		}
+
+		_selectedEnemyTarget = enemy;
+		_selectedEnemyVisual = visual;
+
+		if (_selectedEnemyVisual != null && IsInstanceValid(_selectedEnemyVisual))
+		{
+			_selectedEnemyVisual.Modulate = new Color(1.2f, 1.2f, 0.8f, 1.0f); // Highlight new selection
+		}
+		_previouslySelectedVisual = _selectedEnemyVisual;
+
+		// --- Primary Action: Click-to-Attack ---
+		PerformPlayerAttack(_selectedEnemyTarget);
+	}
+
+	private void PerformPlayerAttack(IEntity targetEnemy)
+	{
+		if (targetEnemy == null || targetEnemy.Health <= 0)
+		{
+			GD.Print("Player attack: Invalid or already defeated target.");
+			if (_selectedEnemyTarget == targetEnemy) // Clear selection if it was this invalid target
+			{
+				if (_selectedEnemyVisual != null && IsInstanceValid(_selectedEnemyVisual)) _selectedEnemyVisual.Modulate = Colors.White;
+				_selectedEnemyTarget = null;
+				_selectedEnemyVisual = null;
+				_previouslySelectedVisual = null;
+			}
+			return;
+		}
 		if (!_mainHeroManager.IsHeroAlive())
 		{
-			GD.Print("Player is defeated and cannot attack.");
-			if(_attackButton != null) _attackButton.Disabled = true;
+			GD.Print("Player attack: Hero is defeated and cannot attack.");
 			return;
 		}
 
-		if (_enemiesManager.HasActiveEnemies())
+		double playerDamage = _mainHeroManager.GetHeroAttackDamage();
+		GD.Print($"Player attacks {targetEnemy.Race} for {playerDamage} potential damage.");
+		_enemiesManager.ApplyDamageToEnemy(targetEnemy, playerDamage);
+
+		if (targetEnemy.Health <= 0) // Target was defeated by this attack
 		{
-			List<IEntity> activeEnemies = _enemiesManager.GetActiveEnemies();
-			if (activeEnemies.Count > 0)
-			{
-				IEntity targetEnemy = activeEnemies[0]; // Simple targeting: first enemy
-				double playerDamage = _mainHeroManager.GetHeroAttackDamage();
-
-				GD.Print($"Player attacks {targetEnemy.Race} for {playerDamage} potential damage.");
-				_enemiesManager.ApplyDamageToEnemy(targetEnemy, playerDamage);
-
-				// If the attacked enemy (or any enemy) is still alive, it's their turn.
-				if (_enemiesManager.HasActiveEnemies()) // Check again after player's attack
-				{
-					// Wait a brief moment for player attack animation/feedback (optional)
-					// await ToSignal(GetTree().CreateTimer(0.5f), SceneTreeTimer.SignalName.Timeout);
-					HandleEnemyTurns();
-				}
-				// If all enemies were defeated by this attack, OnAllEnemiesDefeated will be triggered.
-			}
+			// _selectedEnemyVisual is now invalid as it was QueueFree'd by EnemiesManager
+			_selectedEnemyTarget = null;
+			_selectedEnemyVisual = null;
+			_previouslySelectedVisual = null; // Clear this too
 		}
-		else
+
+		if (_enemiesManager.HasActiveEnemies() && _mainHeroManager.IsHeroAlive())
 		{
-			GD.Print("No enemies left to attack!");
-			if (_attackButton != null) _attackButton.Disabled = true;
+			HandleEnemyTurns();
 		}
 	}
 
-	private void HandleEnemyTurns()
+	private async void HandleEnemyTurns()
 	{
-		if (_mainHeroManager == null || _enemiesManager == null) return;
-		if (!_mainHeroManager.IsHeroAlive()) return; // Hero already defeated
+		if (!_mainHeroManager.IsHeroAlive()) return;
+		if (!_enemiesManager.HasActiveEnemies()) return;
+
 
 		GD.Print("--- Enemy Turn Starts ---");
-		List<IEntity> activeEnemies = _enemiesManager.GetActiveEnemies(); // Get a fresh list
-		foreach (IEntity enemy in activeEnemies)
+		// It's safer to iterate over a copy if the list might change (e.g. an enemy dies from a reflected attack)
+		List<IEntity> currentAttackers = new List<IEntity>(_enemiesManager.GetActiveEnemies());
+
+		foreach (IEntity enemy in currentAttackers)
 		{
 			if (!_mainHeroManager.IsHeroAlive()) break; // Stop if hero is defeated mid-turn
+			if (enemy.Health <= 0) continue; // Skip if this enemy was defeated by a previous enemy's side effect (rare)
 
 			double enemyDamage = _enemiesManager.GetEnemyAttackDamage(enemy);
 			GD.Print($"{enemy.Race} attacks hero for {enemyDamage} damage.");
 			_mainHeroManager.HeroTakeDamage(enemyDamage);
 
+			// Optional: Small delay between enemy attacks for better flow
+			await ToSignal(GetTree().CreateTimer(0.4f), SceneTreeTimer.SignalName.Timeout);
+
 			if (!_mainHeroManager.IsHeroAlive())
 			{
 				GD.Print("Hero has been defeated!");
-				if(_attackButton != null) _attackButton.Disabled = true;
 				// TODO: Implement Game Over logic (e.g., show a screen, offer retry)
 				break;
 			}
-			// Optional: Add a small delay between enemy attacks for better readability
-			// await ToSignal(GetTree().CreateTimer(0.3f), SceneTreeTimer.SignalName.Timeout);
 		}
 		GD.Print("--- Enemy Turn Ends ---");
-
-		// Re-enable attack button if hero is alive and enemies still exist
-		if (_attackButton != null && _mainHeroManager.IsHeroAlive() && _enemiesManager.HasActiveEnemies())
-		{
-			_attackButton.Disabled = false;
-		}
 	}
 
 	private void HandleAnEnemyDefeated(IEntity defeatedEnemy)
 	{
-		GD.Print($"BattleScene: {defeatedEnemy.Race} was defeated! Player might get XP/loot.");
-		// Example: _mainHeroManager.AddExperienceAndLevelUpCheck(defeatedEnemy.GetXPReward());
-		// Example: _mainHeroManager.GainCoins(defeatedEnemy.GetGoldDrop());
-
-		if (_attackButton != null)
+		GD.Print($"BattleScene: {defeatedEnemy.Race} was defeated!");
+		if (_selectedEnemyTarget == defeatedEnemy)
 		{
-			_attackButton.Disabled = !_enemiesManager.HasActiveEnemies();
+			_selectedEnemyTarget = null;
+			_selectedEnemyVisual = null; // Visual is gone
+			_previouslySelectedVisual = null;
 		}
+		// TODO: Add XP, loot, etc.
 	}
 
 	private void HandleAllEnemiesDefeated()
 	{
 		GD.Print("BattleScene: VICTORY! All enemies are defeated.");
-		if (_attackButton != null)
-		{
-			_attackButton.Disabled = true;
-		}
+		_selectedEnemyTarget = null;
+		_selectedEnemyVisual = null;
+		_previouslySelectedVisual = null;
 
-		// TODO: Implement Victory logic (e.g., show victory screen, rewards, transition to next scene)
-		Label victoryLabel = new Label();
-		victoryLabel.Text = "VICTORY!";
-		victoryLabel.HorizontalAlignment = HorizontalAlignment.Center;
-		victoryLabel.VerticalAlignment = VerticalAlignment.Center;
-		victoryLabel.SetAnchorsPreset(Control.LayoutPreset.FullRect); // Make it fill its parent
-		// Add to a high-level UI layer or a specific victory screen container
-		// For simplicity, adding to the root of BattleScene's UI control
+		Label victoryLabel = new Label
+		{
+			Text = "VICTORY!",
+			HorizontalAlignment = HorizontalAlignment.Center,
+			VerticalAlignment = VerticalAlignment.Center,
+			CustomMinimumSize = new Vector2(200,50) // Give it some size
+		};
+		victoryLabel.SetAnchorsPreset(Control.LayoutPreset.Center); // Center it
+
+		// Add to a high-level UI layer. "Control" is the root of your UI in BattleScene.tscn
 		var uiRoot = GetNodeOrNull<Control>("Control");
 		if (uiRoot != null)
 		{
 			uiRoot.AddChild(victoryLabel);
 		} else {
-			AddChild(victoryLabel); // Fallback
+			AddChild(victoryLabel); // Fallback, might not be ideal for layering
+			GD.PrintErr("Could not find 'Control' node to add VictoryLabel. Added to BattleScene root.");
 		}
 		// Example: GetTree().ChangeSceneToFile("res://Scenes/WorldMap.tscn");
 	}
@@ -220,15 +209,8 @@ public partial class BattleScene : Node2D // Or Control, or whatever your root n
 		{
 			_enemiesManager.OnEnemyDefeated -= HandleAnEnemyDefeated;
 			_enemiesManager.OnAllEnemiesDefeated -= HandleAllEnemiesDefeated;
+			_enemiesManager.OnEnemyVisualClicked -= HandleEnemyClicked;
 			_enemiesManager.Cleanup();
-		}
-
-		if (_attackButton != null && IsInstanceValid(_attackButton))
-		{
-			if (_attackButton.IsConnected(Button.SignalName.Pressed, Callable.From(OnAttackButtonPressed)))
-			{
-				_attackButton.Pressed -= OnAttackButtonPressed;
-			}
 		}
 	}
 }

@@ -7,19 +7,21 @@ using MAPZ_lab_RPG.Entities.Enemies; // For EnemyCreator
 
 namespace Scenes.Managers
 {
-    public class EnemiesManager // Made public for easier access from other scenes/scripts
+    public class EnemiesManager
     {
-        private Node _enemyPlacementNode; // The parent node where enemy visuals will be added
+        private Node _enemyPlacementNode;
         private List<IEntity> _activeEnemies;
-        private Dictionary<IEntity, Node2D> _enemyVisualsMap; // To link IEntity logic to its Node2D visual
+        private Dictionary<IEntity, Control> _enemyVisualsMap; // Changed Node2D to Control to match Entity.tscn root
 
         private PackedScene _enemyVisualScene;
-        private const string EnemyVisualScenePath = "res://Scenes/Entity.tscn";
+        private const string EnemyVisualScenePath = "res://Scenes/Entity.tscn"; // Path to your entity scene
 
-        // Optional: Event for when an enemy is defeated
+        // Event for when an enemy is defeated
         public event Action<IEntity> OnEnemyDefeated;
         public event Action OnAllEnemiesDefeated;
 
+        // Event for when an enemy visual is clicked
+        public event Action<IEntity, Control> OnEnemyVisualClicked; // Passes the logical enemy and its Control visual
 
         public EnemiesManager(Node enemyPlacementNode, int level)
         {
@@ -33,65 +35,93 @@ namespace Scenes.Managers
             if (_enemyVisualScene == null)
             {
                 GD.PrintErr($"EnemiesManager: Failed to load enemy visual scene at '{EnemyVisualScenePath}'.");
-                // Potentially throw an exception or handle this state (e.g., no enemies can be spawned)
                 _activeEnemies = new List<IEntity>();
-                _enemyVisualsMap = new Dictionary<IEntity, Node2D>();
+                _enemyVisualsMap = new Dictionary<IEntity, Control>();
                 return;
             }
 
             _activeEnemies = EnemyCreator.Instance.CreateEnemies(level);
-            _enemyVisualsMap = new Dictionary<IEntity, Node2D>();
+            _enemyVisualsMap = new Dictionary<IEntity, Control>();
 
             SpawnAndDisplayEnemies();
         }
 
         private void SpawnAndDisplayEnemies()
         {
-            // Basic layout - you might want something more sophisticated (HBoxContainer, VBoxContainer, or specific positions)
-            float startX = 100; // Initial X position for the first enemy
-            float startY = 100; // Y position for enemies
-            float spacingX = 200; // Horizontal spacing between enemies
+            float startX = 100; // Initial X position
+            float startY = 100; // Y position
+            float spacingX = 250; // Horizontal spacing, adjust based on your Entity.tscn size
 
             for (int i = 0; i < _activeEnemies.Count; i++)
             {
                 IEntity enemy = _activeEnemies[i];
-                Node2D enemyVisualInstance = _enemyVisualScene.Instantiate<Node2D>();
+                // Instantiate Entity.tscn. Its root is Control.
+                Control enemyVisualInstance = _enemyVisualScene.Instantiate<Control>();
 
                 if (enemyVisualInstance == null)
                 {
                     GD.PrintErr($"Failed to instantiate enemy visual for {enemy.Race}.");
-                    continue; // Skip this enemy
+                    continue;
                 }
 
-                // --- Configure Visuals ---
-                Label nameLabel = enemyVisualInstance.GetNode<Label>("Label");
-                ProgressBar healthBar = enemyVisualInstance.GetNode<ProgressBar>("ProgressBar");
-                Label hpTextLabel = enemyVisualInstance.GetNode<Label>("ProgressBar/HPLabel"); // Path from MainHeroManager example
+                // --- Configure Visuals (Paths based on your Entity.tscn screenshot) ---
+                Label nameLabel = enemyVisualInstance.GetNode<Label>("VBoxContainer/CenterContainer/Label");
+                ProgressBar healthBar = enemyVisualInstance.GetNode<ProgressBar>("VBoxContainer/CenterContainer3/ProgressBar");
+                Label hpTextLabel = enemyVisualInstance.GetNode<Label>("VBoxContainer/CenterContainer3/ProgressBar/HPLabel");
+                // TextureRect for sprite (if you load it dynamically)
+                // TextureRect sprite = enemyVisualInstance.GetNode<TextureRect>("VBoxContainer/CenterContainer2/TextureRect");
 
                 if (nameLabel == null || healthBar == null || hpTextLabel == null)
                 {
-                    GD.PrintErr($"Entity.tscn for {enemy.Race} is missing required child nodes (Label, ProgressBar, ProgressBar/HPLabel).");
-                    enemyVisualInstance.QueueFree(); // Clean up
-                    // Potentially remove the problematic enemy from _activeEnemies as well
-                    // or mark it as having no visual
+                    GD.PrintErr($"Entity.tscn for {enemy.Race} is missing required child nodes (Label, ProgressBar, HPLabel). Check paths.");
+                    enemyVisualInstance.QueueFree();
                     continue;
                 }
-                
+
                 nameLabel.Text = enemy.Race;
-                healthBar.MaxValue = enemy.Health; // Assuming Health on IEntity is Max Health initially
+                healthBar.MaxValue = enemy.Health;
                 healthBar.Value = enemy.Health;
                 hpTextLabel.Text = $"{enemy.Health:F0} / {healthBar.MaxValue:F0}";
 
+                // --- Setup Clickable Area ---
+                // The Area2D is a direct child of the root "Control" node in Entity.tscn
+                Area2D clickableArea = enemyVisualInstance.GetNode<Area2D>("Area2D");
+                if (clickableArea != null)
+                {
+                    // Connect the input_event signal.
+                    clickableArea.InputEvent += (viewport, eventArgs, shapeIdx) =>
+                        HandleEnemyInput(viewport, eventArgs, shapeIdx, enemy, enemyVisualInstance);
+                    GD.Print($"Connected input event for {enemy.Race}'s Area2D.");
+                }
+                else
+                {
+                    GD.PrintErr($"EnemiesManager: 'Area2D' node not found in Entity.tscn for {enemy.Race}. This enemy will not be clickable.");
+                }
+
+
                 // --- Position and Add to Scene ---
-                // This is a very basic horizontal positioning. Adjust as needed.
+                // Since the root is a Control, setting Position works.
+                // If _enemyPlacementNode is a container, it might override this.
+                // For now, assume _enemyPlacementNode allows manual positioning of its children.
                 enemyVisualInstance.Position = new Vector2(startX + (i * spacingX), startY);
-                
+
                 _enemyPlacementNode.AddChild(enemyVisualInstance);
                 _enemyVisualsMap.Add(enemy, enemyVisualInstance);
             }
         }
 
-        // Method to apply damage to a specific enemy and update its visuals
+        private void HandleEnemyInput(Node viewport, InputEvent eventArgs, long shapeIdx, IEntity enemy, Control visual)
+        {
+            if (eventArgs is InputEventMouseButton mouseButtonEvent)
+            {
+                if (mouseButtonEvent.ButtonIndex == MouseButton.Left && mouseButtonEvent.Pressed)
+                {
+                    GD.Print($"EnemiesManager: Clicked on enemy visual for {enemy.Race}");
+                    OnEnemyVisualClicked?.Invoke(enemy, visual); // Raise the event
+                }
+            }
+        }
+
         public void ApplyDamageToEnemy(IEntity enemy, double damageAmount)
         {
             if (!_activeEnemies.Contains(enemy) || !_enemyVisualsMap.ContainsKey(enemy))
@@ -100,15 +130,14 @@ namespace Scenes.Managers
                 return;
             }
 
-            enemy.TakeDamage(damageAmount); // The IEntity implementation handles armor, health reduction etc.
+            enemy.TakeDamage(damageAmount);
 
-            // Update Visuals
-            Node2D visualNode = _enemyVisualsMap[enemy];
-            ProgressBar healthBar = visualNode.GetNode<ProgressBar>("ProgressBar");
-            Label hpTextLabel = visualNode.GetNode<Label>("ProgressBar/HPLabel");
+            Control visualNode = _enemyVisualsMap[enemy];
+            ProgressBar healthBar = visualNode.GetNode<ProgressBar>("VBoxContainer/CenterContainer3/ProgressBar");
+            Label hpTextLabel = visualNode.GetNode<Label>("VBoxContainer/CenterContainer3/ProgressBar/HPLabel");
 
             healthBar.Value = enemy.Health;
-            hpTextLabel.Text = $"{Math.Max(0, enemy.Health):F0} / {healthBar.MaxValue:F0}"; // Ensure health doesn't go below 0 visually
+            hpTextLabel.Text = $"{Math.Max(0, enemy.Health):F0} / {healthBar.MaxValue:F0}";
 
             if (enemy.Health <= 0)
             {
@@ -120,14 +149,14 @@ namespace Scenes.Managers
         {
             GD.Print($"{defeatedEnemy.Race} has been defeated!");
 
-            if (_enemyVisualsMap.TryGetValue(defeatedEnemy, out Node2D visualNode))
+            if (_enemyVisualsMap.TryGetValue(defeatedEnemy, out Control visualNode))
             {
-                visualNode.QueueFree(); // Remove visual from the scene tree
+                visualNode.QueueFree();
                 _enemyVisualsMap.Remove(defeatedEnemy);
             }
 
             _activeEnemies.Remove(defeatedEnemy);
-            
+
             OnEnemyDefeated?.Invoke(defeatedEnemy);
 
             if (_activeEnemies.Count == 0)
@@ -137,9 +166,6 @@ namespace Scenes.Managers
             }
         }
 
-        // Method for a specific enemy to perform its attack
-        // The caller (e.g., a battle turn manager) would decide which enemy attacks and who the target is.
-        // This method just returns the damage value from the chosen enemy.
         public double GetEnemyAttackDamage(IEntity attackingEnemy)
         {
             if (!_activeEnemies.Contains(attackingEnemy))
@@ -150,36 +176,36 @@ namespace Scenes.Managers
             return attackingEnemy.Attack();
         }
 
-        // Get a list of currently active enemies (returns a copy to prevent external modification)
         public List<IEntity> GetActiveEnemies()
         {
             return new List<IEntity>(_activeEnemies);
         }
 
-        // Get a random active enemy (e.g., for player targeting)
         public IEntity GetRandomActiveEnemy()
         {
-            if (_activeEnemies.Count == 0)
-            {
-                return null;
-            }
+            if (_activeEnemies.Count == 0) return null;
             Random rand = new Random();
-            int index = rand.Next(_activeEnemies.Count);
-            return _activeEnemies[index];
+            return _activeEnemies[rand.Next(_activeEnemies.Count)];
         }
 
-        // Check if there are any active enemies left
         public bool HasActiveEnemies()
         {
             return _activeEnemies.Count > 0;
         }
 
-        // Optional: Clean up resources if the manager is no longer needed
-        // (e.g., if it's part of a scene that's being freed)
         public void Cleanup()
         {
             foreach (var visualNode in _enemyVisualsMap.Values)
             {
+                // Before queuing free, good practice to ensure signals are disconnected
+                // if the handler might still exist or cause issues.
+                // However, for simple lambda captures like this, it's often okay.
+                Area2D clickableArea = visualNode.GetNodeOrNull<Area2D>("Area2D");
+                if (clickableArea != null)
+                {
+                    // Manually disconnect if you had stored Callables, not strictly necessary for lambdas here
+                    // when the object holding the lambda (EnemiesManager) is also being disposed or out of scope.
+                }
                 visualNode.QueueFree();
             }
             _enemyVisualsMap.Clear();

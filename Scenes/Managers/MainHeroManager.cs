@@ -4,33 +4,47 @@ using System; // For Math.Max
 
 namespace Scenes.Managers
 {
-    public class MainHeroManager // Made public
+    public class MainHeroManager
     {
-        private Node2D _heroDisplayNode;
+        private Control _heroDisplayNode; // Changed from Node2D to Control
         private MainHero _hero; // Instance of your MainHero singleton
 
+        // UI Elements within the heroDisplayNode
         private Label _heroNameLabel;
-        // string _heroName was used as a fallback, now we will rely on _hero.GetName()
         private ProgressBar _heroHealthBar;
         private Label _heroHealthLabel;
+        // private TextureRect _heroSprite; // If you need to access the TextureRect directly
 
+        // External UI Elements
         private Label _moneyLabelNode;
         private Label _levelLabelNode;
 
-        public MainHeroManager(Node2D heroDisplayNode, string heroName, Label moneyLabel, Label levelLabel)
+        // Constructor updated to accept Control and use correct paths
+        public MainHeroManager(Control heroDisplayNode, string heroName, Label moneyLabel, Label levelLabel)
         {
+            if (heroDisplayNode == null) throw new ArgumentNullException(nameof(heroDisplayNode));
             _heroDisplayNode = heroDisplayNode;
 
-            _heroNameLabel = heroDisplayNode.GetNode<Label>("Label");
-            _heroHealthBar = heroDisplayNode.GetNode<ProgressBar>("ProgressBar");
-            _heroHealthLabel = heroDisplayNode.GetNode<Label>("ProgressBar/HPLabel");
-            _moneyLabelNode = moneyLabel;
-            _levelLabelNode = levelLabel;
+            // Get UI nodes from the heroDisplayNode using paths from Entity.tscn
+            // Assuming Entity.tscn's structure: Control -> VBoxContainer -> specific containers
+            _heroNameLabel = _heroDisplayNode.GetNode<Label>("VBoxContainer/CenterContainer/Label");
+            _heroHealthBar = _heroDisplayNode.GetNode<ProgressBar>("VBoxContainer/CenterContainer3/ProgressBar");
+            _heroHealthLabel = _heroDisplayNode.GetNode<Label>("VBoxContainer/CenterContainer3/ProgressBar/HPLabel");
+            // _heroSprite = _heroDisplayNode.GetNode<TextureRect>("VBoxContainer/CenterContainer2/TextureRect"); // Example if needed
+
+            if (_heroNameLabel == null || _heroHealthBar == null || _heroHealthLabel == null)
+            {
+                GD.PrintErr("MainHeroManager: Critical UI elements (Name, HealthBar, HPLabel) not found in heroDisplayNode. Check paths relative to Entity.tscn root (Control)!");
+                // Consider throwing an exception or having a fallback if these are essential
+            }
+
+            _moneyLabelNode = moneyLabel ?? throw new ArgumentNullException(nameof(moneyLabel));
+            _levelLabelNode = levelLabel ?? throw new ArgumentNullException(nameof(levelLabel));
 
             _hero = MainHero.Instance;
             _hero.HeroSelect(heroName); // Selects the hero type within MainHero
 
-            _heroNameLabel.Text = _hero.GetName(); // Use GetName() from MainHero
+            if (_heroNameLabel != null) _heroNameLabel.Text = _hero.GetName(); // Use GetName() from MainHero
             InitialUISetup();
         }
 
@@ -41,17 +55,15 @@ namespace Scenes.Managers
             UpdateLevelUI();
         }
 
-        // Existing ApplyDamage, uses MainHero.TakeDamage
-        public void ApplyDamage(int damage)
+        public void ApplyDamage(int damage) // Kept for potential other uses
         {
             if (_hero == null) return;
-            // MainHero.TakeDamage expects a double, so cast
-            _hero.TakeDamage((double)damage);
+            _hero.TakeDamage((double)damage); // MainHero.TakeDamage expects a double
             UpdateHealthUI();
 
             if (!IsHeroAlive())
             {
-                GD.Print($"{_hero.GetName()} has been defeated!");
+                GD.Print($"{_hero.GetName()} has been defeated (from ApplyDamage)!");
             }
         }
 
@@ -59,12 +71,11 @@ namespace Scenes.Managers
         {
             if (_hero == null || _heroHealthBar == null || _heroHealthLabel == null) return;
 
-            // Use getter methods from MainHero
             double currentHealth = _hero.GetCurrentHealth();
             double maxHealth = _hero.GetMaxHealth();
 
             _heroHealthBar.MaxValue = maxHealth;
-            _heroHealthBar.Value = Math.Max(0, currentHealth); // Ensure bar doesn't go below 0
+            _heroHealthBar.Value = Math.Max(0, currentHealth);
 
             _heroHealthLabel.Text = $"{_heroHealthBar.Value:F0}/{maxHealth:F0}";
         }
@@ -72,18 +83,15 @@ namespace Scenes.Managers
         private void UpdateMoneyUI()
         {
             if (_hero == null || _moneyLabelNode == null) return;
-            // Use getter method from MainHero
             _moneyLabelNode.Text = $"Money: {_hero.GetCoins()}";
         }
 
         private void UpdateLevelUI()
         {
             if (_hero == null || _levelLabelNode == null) return;
-            // Use getter method from MainHero
             _levelLabelNode.Text = $"Level: {_hero.GetLevel()}";
         }
 
-        // Existing methods, should already align with MainHero's public methods
         public void HealHero(double amount)
         {
             if (_hero == null) return;
@@ -94,22 +102,14 @@ namespace Scenes.Managers
         public void AddExperienceAndLevelUpCheck(int experience)
         {
             if (_hero == null) return;
-            int previousLevel = _hero.GetLevel(); // Use getter
+            int previousLevel = _hero.GetLevel();
             _hero.AddExperience(experience);
 
-            if (_hero.GetLevel() > previousLevel) // Use getter
+            if (_hero.GetLevel() > previousLevel)
             {
                 UpdateLevelUI();
-                UpdateHealthUI();
+                UpdateHealthUI(); // Max health might change
             }
-        }
-
-        public void ManuallyTriggerLevelUp()
-        {
-            if (_hero == null) return;
-            _hero.LevelUp();
-            UpdateLevelUI();
-            UpdateHealthUI();
         }
 
         public void GainCoins(int amount)
@@ -126,44 +126,15 @@ namespace Scenes.Managers
             UpdateMoneyUI();
         }
 
-        public void RefreshAllUI()
-        {
-            if (_hero == null || _heroNameLabel == null) return;
-            _heroNameLabel.Text = _hero.GetName(); // Use getter
-            UpdateHealthUI();
-            UpdateMoneyUI();
-            UpdateLevelUI();
-        }
-
-        // --- METHODS NEEDED BY BATTLESCENE (adjusted to use MainHero's public API) ---
-
-        /// <summary>
-        /// Gets the hero's current attack damage using MainHero.Atack().
-        /// </summary>
-        /// <returns>The hero's attack damage as a double.</returns>
         public double GetHeroAttackDamage()
         {
-            if (_hero == null)
-            {
-                GD.PrintErr("MainHeroManager: Hero instance is null in GetHeroAttackDamage.");
-                return 0;
-            }
-            // MainHero.Atack() directly returns the damage of the internal IHero
+            if (_hero == null) { GD.PrintErr("MainHeroManager: Hero instance null."); return 0; }
             return _hero.Atack();
         }
 
-        /// <summary>
-        /// Applies damage to the hero from combat using MainHero.TakeDamage(double).
-        /// </summary>
-        /// <param name="damageTaken">The amount of damage to apply (as a double).</param>
         public void HeroTakeDamage(double damageTaken)
         {
-            if (_hero == null)
-            {
-                GD.PrintErr("MainHeroManager: Hero instance is null in HeroTakeDamage.");
-                return;
-            }
-            // MainHero.TakeDamage(double) handles the damage logic for the internal IHero
+            if (_hero == null) { GD.PrintErr("MainHeroManager: Hero instance null."); return; }
             _hero.TakeDamage(damageTaken);
             UpdateHealthUI();
 
@@ -173,18 +144,9 @@ namespace Scenes.Managers
             }
         }
 
-        /// <summary>
-        /// Checks if the hero is still alive using MainHero.GetCurrentHealth().
-        /// </summary>
-        /// <returns>True if hero's current health is greater than 0, false otherwise.</returns>
         public bool IsHeroAlive()
         {
-            if (_hero == null)
-            {
-                GD.PrintErr("MainHeroManager: Hero instance is null in IsHeroAlive.");
-                return false;
-            }
-            // Uses the getter from MainHero
+            if (_hero == null) return false;
             return _hero.GetCurrentHealth() > 0;
         }
     }

@@ -1,37 +1,59 @@
 [gd_scene load_steps=3 format=3 uid="uid://2cyy3u86jimb"]
 
-[ext_resource type="Script" uid="uid://b47imixqrmky6" path="res://Scenes/Entity.cs" id="1_rnyw1"]
+[sub_resource type="CanvasTexture" id="CanvasTexture_v1h3u"]
 
-[sub_resource type="CanvasTexture" id="CanvasTexture_rnyw1"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_rnyw1"]
+size = Vector2(128, 128)
 
-[node name="Entity" type="Node2D"]
-script = ExtResource("1_rnyw1")
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -1024.0
+offset_bottom = -520.0
+grow_horizontal = 2
+grow_vertical = 2
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(42.7961, 6.41447)
-scale = Vector2(-63.0658, 42.5395)
-texture = SubResource("CanvasTexture_rnyw1")
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_right = 128.0
+offset_bottom = 128.0
+alignment = 1
 
-[node name="Label" type="Label" parent="."]
-offset_top = -40.0
-offset_right = 40.0
+[node name="CenterContainer" type="CenterContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/CenterContainer"]
+layout_mode = 2
 text = "EntityName"
-horizontal_alignment = 1
 
-[node name="ProgressBar" type="ProgressBar" parent="."]
-offset_left = 9.0
-offset_top = 37.0
-offset_right = 77.0
-offset_bottom = 64.0
-value = 50.0
+[node name="CenterContainer2" type="CenterContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer/CenterContainer2"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+texture = SubResource("CanvasTexture_v1h3u")
+
+[node name="CenterContainer3" type="CenterContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="ProgressBar" type="ProgressBar" parent="VBoxContainer/CenterContainer3"]
+custom_minimum_size = Vector2(128, 30)
+layout_mode = 2
 show_percentage = false
 
-[node name="HPLabel" type="Label" parent="ProgressBar"]
+[node name="HPLabel" type="Label" parent="VBoxContainer/CenterContainer3/ProgressBar"]
 layout_mode = 0
-offset_left = 2.0
-offset_top = 2.0
-offset_right = 66.0
-offset_bottom = 25.0
+offset_right = 128.0
+offset_bottom = 30.0
 text = "50/100"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(64, 64)
+shape = SubResource("RectangleShape2D_rnyw1")
