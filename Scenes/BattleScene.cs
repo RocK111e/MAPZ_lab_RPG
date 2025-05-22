@@ -7,19 +7,15 @@ using MAPZ_lab_RPG.Entities.Heroes;
 
 public partial class BattleScene : Node2D
 {
-	// Hero related
-	private Control _heroDisplayNode; // Root of Entity.tscn for hero
+	private Control _heroDisplayNode; 
 	private MainHeroManager _mainHeroManager;
 
-	// Enemy related
-	private GridContainer _enemyPlaceholderNode; // This is the GridContainer for enemies
+	private GridContainer _enemyPlaceholderNode; 
 	private EnemiesManager _enemiesManager;
 
-	// UI Labels
 	private Label _moneyLabel;
 	private Label _levelLabel;
 
-	// Targeting
 	private IEntity _selectedEnemyTarget;
 	private Control _selectedEnemyVisual;
 	private Control _previouslySelectedVisual;
@@ -28,13 +24,13 @@ public partial class BattleScene : Node2D
 	{
 		var RoundLabel = GetNode<Label>("Control/VBoxContainer/HBoxContainer/RoundLabel");
 		RoundLabel.Text = $"Round: {GameData.CurrentRound}";
-		// --- Hero Setup ---
+	
 		string selectedHero = MainHero.Instance.HeroEnumToStr(GameData.SelectedHeroName);
 
 		_heroDisplayNode = GD.Load<PackedScene>("res://Scenes/Entity.tscn").Instantiate<Control>();
-		var heroContainer = GetNode<CenterContainer>("Control/VBoxContainer/HBoxContainer2/CenterContainer"); // Hero's parent
+		var heroContainer = GetNode<CenterContainer>("Control/VBoxContainer/HBoxContainer2/CenterContainer"); 
 		if (heroContainer == null) { GD.PrintErr("BattleScene: Hero container node 'Control/VBoxContainer/HBoxContainer2/CenterContainer' not found!"); GetTree().Quit(); return; }
-		heroContainer.AddChild(_heroDisplayNode); // Hero added to its CenterContainer
+		heroContainer.AddChild(_heroDisplayNode); 
 		_heroDisplayNode.Name = "HeroDisplayNode";
 
 		_moneyLabel = GetNode<Label>("Control/VBoxContainer/HBoxContainer3/MoneyLabel");
@@ -45,13 +41,10 @@ public partial class BattleScene : Node2D
 		GameData.MainHeroManager = _mainHeroManager;
 		_mainHeroManager.SetNodes(_heroDisplayNode, _moneyLabel, _levelLabel);
 
-		// --- Enemies Setup ---
-		// Path to the GridContainer (previously CenterContainer2, now changed type and renamed)
 		_enemyPlaceholderNode = GetNode<GridContainer>("Control/VBoxContainer/HBoxContainer2/GridContainer");
 		if (_enemyPlaceholderNode == null) { GD.PrintErr("BattleScene: EnemyGridContainer node at 'Control/VBoxContainer/HBoxContainer2/EnemyGridContainer' not found! Ensure path is correct and type is GridContainer."); GetTree().Quit(); return; }
 
-		// Configure GridContainer columns in the Godot Editor inspector for EnemyGridContainer.
-		// Example: _enemyPlaceholderNode.Columns = 3; // Or set this in the editor.
+	
 
 		int currentBattleLevel = GameData.CurrentRound;
 		_enemiesManager = new EnemiesManager(_enemyPlaceholderNode, currentBattleLevel);
@@ -88,7 +81,7 @@ public partial class BattleScene : Node2D
 
 		if (_selectedEnemyVisual != null && IsInstanceValid(_selectedEnemyVisual))
 		{
-			_selectedEnemyVisual.Modulate = new Color(1.2f, 1.2f, 0.8f, 1.0f); // Highlight
+			_selectedEnemyVisual.Modulate = new Color(1.2f, 1.2f, 0.8f, 1.0f);
 		}
 		_previouslySelectedVisual = _selectedEnemyVisual;
 

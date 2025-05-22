@@ -1,23 +1,20 @@
 using Godot;
-using MAPZ_lab_RPG.Entities.Heroes; // Your MainHero class namespace
-using System; // For Math.Max
+using MAPZ_lab_RPG.Entities.Heroes;
+using System;
 
 namespace Scenes.Managers
 {
     public class MainHeroManager
     {
-        private Control _heroDisplayNode; // Root of Entity.tscn instance for hero
-        private MainHero _hero; // Instance of your MainHero singleton
+        private Control _heroDisplayNode;
+        private MainHero _hero;
 
-        private string _heroName; // Name of the hero
+        private string _heroName;
 
-        // UI Elements within the heroDisplayNode
         private Label _heroNameLabel;
         private ProgressBar _heroHealthBar;
         private Label _heroHealthLabel;
-        // private TextureRect _heroSprite; // If you need to access/change the TextureRect
 
-        // External UI Elements
         private Label _moneyLabelNode;
         private Label _levelLabelNode;
 

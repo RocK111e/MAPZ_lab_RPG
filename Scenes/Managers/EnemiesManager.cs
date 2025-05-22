@@ -9,7 +9,7 @@ namespace Scenes.Managers
 {
     public class EnemiesManager
     {
-        private Node _enemyPlacementNode; // This should be the GridContainer
+        private Node _enemyPlacementNode;
         private List<IEntity> _activeEnemies;
         private Dictionary<IEntity, Control> _enemyVisualsMap;
 
@@ -89,11 +89,8 @@ namespace Scenes.Managers
                 Texture2D texture = GD.Load<Texture2D>(texturePath);
                 icon.Texture = texture;
 
-                // Ensure Entity.tscn's root Control has Container Sizing flags set appropriately
-                // (e.g., Horizontal/Vertical: Shrink Center or Expand Fill) to behave in the grid.
                 enemyVisualInstance.GuiInput += (InputEvent @event) => OnEnemyClick(@event, enemy, enemyVisualInstance);
 
-                // Add to the GridContainer. Positioning is handled by the container.
                 _enemyPlacementNode.AddChild(enemyVisualInstance);
                 _enemyVisualsMap.Add(enemy, enemyVisualInstance);
 
