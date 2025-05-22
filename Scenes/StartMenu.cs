@@ -1,5 +1,6 @@
 // StartMenu.cs
 using Godot;
+using MAPZ_lab_RPG.Entities.Heroes;
 
 public partial class StartMenu : Control
 {
@@ -20,14 +21,14 @@ public partial class StartMenu : Control
 
 		// Connect the 'pressed' signal of each button to a method.
 		// We use lambda expressions for conciseness here.
-		_archerButton.Pressed += () => OnHeroSelected("Archer");
-		_swordsmanButton.Pressed += () => OnHeroSelected("Swordsman");
-		_pirateButton.Pressed += () => OnHeroSelected("Pirate");
+		_archerButton.Pressed += () => OnHeroSelected(HeroEnum.ARCHER);
+		_swordsmanButton.Pressed += () => OnHeroSelected(HeroEnum.SWORDSMAN);
+		_pirateButton.Pressed += () => OnHeroSelected(HeroEnum.PIRATE);
 		GD.Print("Binded buttons!");
 
 	}
 
-	private void OnHeroSelected(string heroName)
+	private void OnHeroSelected(HeroEnum heroName)
 	{
 		GD.Print($"Hero selected: {heroName}");
 

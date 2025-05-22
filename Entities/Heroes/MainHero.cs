@@ -6,8 +6,28 @@ using MAPZ_lab_RPG.Entities.Heroes.HeroTypes;
 
 namespace MAPZ_lab_RPG.Entities.Heroes
 {
+    public enum HeroEnum 
+    {
+        ARCHER,
+        SWORDSMAN,
+        PIRATE
+    }
     public class MainHero
     {
+        public string HeroEnumToStr(HeroEnum hero)
+        {
+            switch (hero)
+            {
+                case HeroEnum.ARCHER:
+                    return "Archer";
+                case HeroEnum.SWORDSMAN:
+                    return "Swordsman";
+                case HeroEnum.PIRATE:
+                    return "Pirate";
+                default:
+                    throw new ArgumentException("Invalid hero enum value");
+            }
+        }
         private static MainHero _instance;
 
         public static MainHero Instance
@@ -26,16 +46,17 @@ namespace MAPZ_lab_RPG.Entities.Heroes
         {
         }
 
-        public void HeroSelect(string hero_name){
+        public void HeroSelect(HeroEnum hero_name)
+        {
             switch (hero_name)
             {
-                case "Archer":
+                case HeroEnum.ARCHER:
                     hero = new Archer();
                     break;
-                case "Swordsman":
+                case HeroEnum.SWORDSMAN:
                     hero = new Swordsman();
                     break;
-                case "Pirate":
+                case HeroEnum.PIRATE:
                     hero = new Pirate();
                     break;
                 default:
@@ -80,37 +101,47 @@ namespace MAPZ_lab_RPG.Entities.Heroes
         {
             hero.AddItem(item);
         }
-        public double GetDamage(){
+        public double GetDamage()
+        {
             return hero.Damage;
         }
-        public double GetArmor(){
+        public double GetArmor()
+        {
             return hero.Armor;
         }
-        public double GetCurrentHealth(){
+        public double GetCurrentHealth()
+        {
             return hero.CurrentHealth;
         }
-        public double GetMaxHealth(){
+        public double GetMaxHealth()
+        {
             return hero.MaxHealth;
         }
-        public string GetName(){
+        public string GetName()
+        {
             return hero.Name;
         }
-        public int GetCoins(){
+        public int GetCoins()
+        {
             return hero.Coins;
         }
-        public int GetExperience(){
+        public int GetExperience()
+        {
             return hero.Experience;
         }
-        public int GetLevel(){
+        public int GetLevel()
+        {
             return hero.Level;
         }
-        public int GetUpgradePoints(){
+        public int GetUpgradePoints()
+        {
             return hero.UpgradePoints;
         }
-        public List<IItem> GetInventory(){
+        public List<IItem> GetInventory()
+        {
             return hero.Inventory;
         }
-        private IHero hero {get; set;}
+        private IHero hero { get; set; }
     }
 
 }

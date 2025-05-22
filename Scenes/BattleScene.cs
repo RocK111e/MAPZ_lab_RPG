@@ -3,6 +3,7 @@ using Scenes.Managers;
 using MAPZ_lab_RPG.Entities;
 using System.Collections.Generic;
 using System;
+using MAPZ_lab_RPG.Entities.Heroes;
 
 public partial class BattleScene : Node2D
 {
@@ -28,8 +29,7 @@ public partial class BattleScene : Node2D
 		var RoundLabel = GetNode<Label>("Control/VBoxContainer/HBoxContainer/RoundLabel");
 		RoundLabel.Text = $"Round: {GameData.CurrentRound}";
 		// --- Hero Setup ---
-		string selectedHero = GameData.SelectedHeroName;
-		if (GameData.SelectedHeroName == null) GD.PrintRich("[color=yellow]BattleScene Warning: GameData.SelectedHeroName is null. Defaulting to 'Archer'.[/color]");
+		string selectedHero = MainHero.Instance.HeroEnumToStr(GameData.SelectedHeroName);
 
 		_heroDisplayNode = GD.Load<PackedScene>("res://Scenes/Entity.tscn").Instantiate<Control>();
 		var heroContainer = GetNode<CenterContainer>("Control/VBoxContainer/HBoxContainer2/CenterContainer"); // Hero's parent
@@ -40,7 +40,7 @@ public partial class BattleScene : Node2D
 		_moneyLabel = GetNode<Label>("Control/VBoxContainer/HBoxContainer3/MoneyLabel");
 		_levelLabel = GetNode<Label>("Control/VBoxContainer/HBoxContainer3/LevelLabel");
 		if (_moneyLabel == null || _levelLabel == null) { GD.PrintErr("BattleScene: MoneyLabel or LevelLabel not found!"); GetTree().Quit(); return; }
-		_mainHeroManager = GameData.MainHeroManager ?? new MainHeroManager(_heroDisplayNode, selectedHero, _moneyLabel, _levelLabel);
+		_mainHeroManager = GameData.MainHeroManager ?? new MainHeroManager(_heroDisplayNode, GameData.SelectedHeroName, _moneyLabel, _levelLabel);
 		GD.Print("MainHeroManager initialized.");
 		GameData.MainHeroManager = _mainHeroManager;
 		_mainHeroManager.SetNodes(_heroDisplayNode, _moneyLabel, _levelLabel);

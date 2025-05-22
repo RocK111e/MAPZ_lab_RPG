@@ -21,9 +21,9 @@ namespace Scenes.Managers
         private Label _moneyLabelNode;
         private Label _levelLabelNode;
 
-        public MainHeroManager(Control heroDisplayNode, string heroName, Label moneyLabel, Label levelLabel)
+        public MainHeroManager(Control heroDisplayNode, HeroEnum heroName, Label moneyLabel, Label levelLabel)
         {
-            _heroName = heroName;
+            _heroName = MainHero.Instance.HeroEnumToStr(heroName) ;
             if (heroDisplayNode == null) throw new ArgumentNullException(nameof(heroDisplayNode));
             _heroDisplayNode = heroDisplayNode;
 
@@ -37,7 +37,7 @@ namespace Scenes.Managers
                 GD.PrintErr("MainHeroManager: Critical UI elements (Name, HealthBar, HPLabel) not found in heroDisplayNode. Check paths relative to Entity.tscn root (Control)!");
             }
 
-            string texturePath = $"res://Assets/{heroName.ToLower()}.jpg";
+            string texturePath = $"res://Assets/{_heroName.ToLower()}.jpg";
             Texture2D texture = GD.Load<Texture2D>(texturePath);
             icon.Texture = texture;
 
