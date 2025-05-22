@@ -1,243 +1,190 @@
 using Godot;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using MAPZ_lab_RPG.Entities; // Required for IEntity and IEntityFactory
+using System.Linq; // Useful for methods like FirstOrDefault or ToList
+using MAPZ_lab_RPG.Entities; // For IEntity
+using MAPZ_lab_RPG.Entities.Enemies; // For EnemyCreator
 
 namespace Scenes.Managers
 {
-    class EnemiesManager
+    public class EnemiesManager // Made public for easier access from other scenes/scripts
     {
-        private Node _enemyContainerNode;    // Parent Node in the scene tree where enemy visuals will be added
-        private PackedScene _enemyVisualPackedScene; // Pre-loaded PackedScene for an individual enemy
-        private IEntityFactory _entityFactory; // Factory to create IEntity instances
+        private Node _enemyPlacementNode; // The parent node where enemy visuals will be added
+        private List<IEntity> _activeEnemies;
+        private Dictionary<IEntity, Node2D> _enemyVisualsMap; // To link IEntity logic to its Node2D visual
 
-        // Helper class to bundle an IEntity with its Godot Node and UI elements
-        private class ManagedEnemy
+        private PackedScene _enemyVisualScene;
+        private const string EnemyVisualScenePath = "res://Scenes/Entity.tscn";
+
+        // Optional: Event for when an enemy is defeated
+        public event Action<IEntity> OnEnemyDefeated;
+        public event Action OnAllEnemiesDefeated;
+
+
+        public EnemiesManager(Node enemyPlacementNode, int level)
         {
-            public IEntity Entity { get; }
-            public Node2D NodeInstance { get; } // Root node of the instantiated enemy scene
-            public ProgressBar HealthBar { get; }
-            public double MaxHealth { get; }
-
-            public ManagedEnemy(IEntity entity, Node2D nodeInstance)
+            if (enemyPlacementNode == null)
             {
-                Entity = entity;
-                NodeInstance = nodeInstance;
-                MaxHealth = Entity.Health;
+                throw new ArgumentNullException(nameof(enemyPlacementNode), "Enemy placement node cannot be null.");
+            }
+            _enemyPlacementNode = enemyPlacementNode;
 
-                HealthBar = NodeInstance.GetNodeOrNull<ProgressBar>("ProgressBar"); // Adjust path if needed
-                if (HealthBar == null)
-                {
-                    GD.PushWarning($"Enemy instance '{NodeInstance.Name}' (scene: '{NodeInstance.SceneFilePath}') " +
-                                   "is missing a ProgressBar node named 'ProgressBar'. Health UI will not function.");
-                }
-                else
-                {
-                    HealthBar.MaxValue = MaxHealth > 0 ? MaxHealth : 1;
-                    HealthBar.Value = Entity.Health;
-                }
+            _enemyVisualScene = GD.Load<PackedScene>(EnemyVisualScenePath);
+            if (_enemyVisualScene == null)
+            {
+                GD.PrintErr($"EnemiesManager: Failed to load enemy visual scene at '{EnemyVisualScenePath}'.");
+                // Potentially throw an exception or handle this state (e.g., no enemies can be spawned)
+                _activeEnemies = new List<IEntity>();
+                _enemyVisualsMap = new Dictionary<IEntity, Node2D>();
+                return;
             }
 
-            public void UpdateHealthUI()
-            {
-                if (HealthBar != null)
-                {
-                    HealthBar.Value = Entity.Health;
-                }
-            }
+            _activeEnemies = EnemyCreator.Instance.CreateEnemies(level);
+            _enemyVisualsMap = new Dictionary<IEntity, Node2D>();
 
-            public void CleanUp()
-            {
-                NodeInstance.QueueFree();
-            }
+            SpawnAndDisplayEnemies();
         }
 
-        private Dictionary<IEntity, ManagedEnemy> _activeEnemies;
-
-        /// <summary>
-        /// Initializes a new instance of the EnemiesManager.
-        /// </summary>
-        /// <param name="enemyContainerNode">The parent Node where enemy scenes will be instanced as children.</param>
-        /// <param name="enemyScenePath">The resource path to the PackedScene for an enemy (e.g., "res://Scenes/Entity.tscn").</param>
-        /// <param name="entityFactory">The factory used to create IEntity data objects.</param>
-        public EnemiesManager(Node enemyContainerNode, string enemyScenePath, IEntityFactory entityFactory)
+        private void SpawnAndDisplayEnemies()
         {
-            _enemyContainerNode = enemyContainerNode ?? throw new ArgumentNullException(nameof(enemyContainerNode));
-            _entityFactory = entityFactory ?? throw new ArgumentNullException(nameof(entityFactory));
-            _activeEnemies = new Dictionary<IEntity, ManagedEnemy>();
+            // Basic layout - you might want something more sophisticated (HBoxContainer, VBoxContainer, or specific positions)
+            float startX = 100; // Initial X position for the first enemy
+            float startY = 100; // Y position for enemies
+            float spacingX = 200; // Horizontal spacing between enemies
 
-            if (string.IsNullOrEmpty(enemyScenePath))
+            for (int i = 0; i < _activeEnemies.Count; i++)
             {
-                throw new ArgumentException("Enemy scene path cannot be null or empty.", nameof(enemyScenePath));
-            }
-            _enemyVisualPackedScene = GD.Load<PackedScene>(enemyScenePath);
-            if (_enemyVisualPackedScene == null)
-            {
-                throw new ArgumentException($"Failed to load PackedScene from path: {enemyScenePath}", nameof(enemyScenePath));
-            }
-        }
+                IEntity enemy = _activeEnemies[i];
+                Node2D enemyVisualInstance = _enemyVisualScene.Instantiate<Node2D>();
 
-        /// <summary>
-        /// Spawns a single enemy.
-        /// </summary>
-        /// <typeparam name="TParam">Type of parameter for entity creation.</typeparam>
-        /// <param name="creationParam">Parameter for the entity factory.</param>
-        /// <param name="position">Global position to spawn the enemy.</param>
-        /// <returns>The created IEntity, or null on failure.</returns>
-        public IEntity SpawnEnemy<TParam>(TParam creationParam, Vector2 position)
-        {
-            IEntity enemyEntity = _entityFactory.CreateEntity(creationParam);
-            if (enemyEntity == null)
-            {
-                GD.PushError($"EntityFactory failed to create entity with param: {creationParam}");
-                return null;
-            }
-
-            Node2D enemyNode2D = _enemyVisualPackedScene.Instantiate<Node2D>();
-            if (enemyNode2D == null)
-            {
-                GD.PushError($"Failed to instantiate enemy scene ('{_enemyVisualPackedScene.ResourcePath}') or its root is not Node2D.");
-                // Potentially clean up enemyEntity if it has disposable resources, though IEntity doesn't specify
-                return null;
-            }
-            
-            enemyNode2D.GlobalPosition = position;
-            _enemyContainerNode.AddChild(enemyNode2D);
-
-            ManagedEnemy managedEnemy = new ManagedEnemy(enemyEntity, enemyNode2D);
-            _activeEnemies.Add(enemyEntity, managedEnemy);
-            
-            GD.Print($"Spawned enemy '{enemyEntity.Race}' (HP: {enemyEntity.Health}/{managedEnemy.MaxHealth}) at {position}.");
-            return enemyEntity;
-        }
-
-        /// <summary>
-        /// Spawns multiple enemies based on provided parameters and positions.
-        /// </summary>
-        /// <typeparam name="TParam">The type of parameter the IEntityFactory's CreateEntity method expects.</typeparam>
-        /// <param name="creationParams">A list of parameters, one for each enemy to be created by the factory.</param>
-        /// <param name="positions">A list of Vector2 global positions, corresponding to each enemy.</param>
-        /// <returns>A list of successfully spawned IEntity objects.</returns>
-        public List<IEntity> SpawnMultipleEnemies<TParam>(List<TParam> creationParams, List<Vector2> positions)
-        {
-            if (creationParams == null) throw new ArgumentNullException(nameof(creationParams));
-            if (positions == null) throw new ArgumentNullException(nameof(positions));
-            if (creationParams.Count != positions.Count)
-            {
-                GD.PushError("EnemiesManager: Mismatch between number of enemy creation parameters and positions. Cannot spawn.");
-                return new List<IEntity>(); // Return empty list on critical error
-            }
-
-            List<IEntity> spawnedEntities = new List<IEntity>();
-            for (int i = 0; i < creationParams.Count; i++)
-            {
-                TParam currentParam = creationParams[i];
-                Vector2 currentPosition = positions[i];
-
-                IEntity enemyEntity = _entityFactory.CreateEntity(currentParam);
-                if (enemyEntity == null)
+                if (enemyVisualInstance == null)
                 {
-                    GD.PushWarning($"EnemiesManager: EntityFactory failed to create entity for param: {currentParam} at index {i}. Skipping this enemy.");
-                    continue; // Skip to the next enemy
+                    GD.PrintErr($"Failed to instantiate enemy visual for {enemy.Race}.");
+                    continue; // Skip this enemy
                 }
 
-                // Instantiate the scene using the preloaded PackedScene
-                Node2D enemyNode2D = _enemyVisualPackedScene.Instantiate<Node2D>();
-                if (enemyNode2D == null)
+                // --- Configure Visuals ---
+                Label nameLabel = enemyVisualInstance.GetNode<Label>("Label");
+                ProgressBar healthBar = enemyVisualInstance.GetNode<ProgressBar>("ProgressBar");
+                Label hpTextLabel = enemyVisualInstance.GetNode<Label>("ProgressBar/HPLabel"); // Path from MainHeroManager example
+
+                if (nameLabel == null || healthBar == null || hpTextLabel == null)
                 {
-                    GD.PushWarning($"EnemiesManager: Failed to instantiate enemy scene ('{_enemyVisualPackedScene.ResourcePath}') or its root is not Node2D, for enemy with param {currentParam} at index {i}. Skipping this enemy.");
-                    // Potentially clean up enemyEntity if it has disposable resources
-                    continue; // Skip to the next enemy
+                    GD.PrintErr($"Entity.tscn for {enemy.Race} is missing required child nodes (Label, ProgressBar, ProgressBar/HPLabel).");
+                    enemyVisualInstance.QueueFree(); // Clean up
+                    // Potentially remove the problematic enemy from _activeEnemies as well
+                    // or mark it as having no visual
+                    continue;
                 }
                 
-                enemyNode2D.GlobalPosition = currentPosition;
-                _enemyContainerNode.AddChild(enemyNode2D);
+                nameLabel.Text = enemy.Race;
+                healthBar.MaxValue = enemy.Health; // Assuming Health on IEntity is Max Health initially
+                healthBar.Value = enemy.Health;
+                hpTextLabel.Text = $"{enemy.Health:F0} / {healthBar.MaxValue:F0}";
 
-                ManagedEnemy managedEnemy = new ManagedEnemy(enemyEntity, enemyNode2D);
-                _activeEnemies.Add(enemyEntity, managedEnemy);
-                spawnedEntities.Add(enemyEntity);
-
-                GD.Print($"EnemiesManager: Spawned enemy '{enemyEntity.Race}' (HP: {enemyEntity.Health}/{managedEnemy.MaxHealth}) at {currentPosition}.");
+                // --- Position and Add to Scene ---
+                // This is a very basic horizontal positioning. Adjust as needed.
+                enemyVisualInstance.Position = new Vector2(startX + (i * spacingX), startY);
+                
+                _enemyPlacementNode.AddChild(enemyVisualInstance);
+                _enemyVisualsMap.Add(enemy, enemyVisualInstance);
             }
-            return spawnedEntities;
         }
 
-
-        public void DamageEnemy(IEntity enemy, double damageAmount)
+        // Method to apply damage to a specific enemy and update its visuals
+        public void ApplyDamageToEnemy(IEntity enemy, double damageAmount)
         {
-            if (enemy == null)
+            if (!_activeEnemies.Contains(enemy) || !_enemyVisualsMap.ContainsKey(enemy))
             {
-                GD.PushWarning("EnemiesManager: Attempted to damage a null enemy reference.");
+                GD.Print($"EnemiesManager: Attempted to damage non-existent or already defeated enemy: {enemy?.Race ?? "Unknown"}.");
                 return;
             }
 
-            if (!_activeEnemies.TryGetValue(enemy, out ManagedEnemy managedEnemy))
-            {
-                GD.PushWarning($"EnemiesManager: Attempted to damage enemy '{enemy.Race}' (Hash: {enemy.GetHashCode()}) not currently managed or already removed.");
-                return;
-            }
+            enemy.TakeDamage(damageAmount); // The IEntity implementation handles armor, health reduction etc.
 
-            double healthBeforeDamage = enemy.Health;
-            enemy.TakeDamage(damageAmount);
-            managedEnemy.UpdateHealthUI();
+            // Update Visuals
+            Node2D visualNode = _enemyVisualsMap[enemy];
+            ProgressBar healthBar = visualNode.GetNode<ProgressBar>("ProgressBar");
+            Label hpTextLabel = visualNode.GetNode<Label>("ProgressBar/HPLabel");
 
-            GD.Print($"EnemiesManager: Enemy '{enemy.Race}' (HP: {healthBeforeDamage} -> {enemy.Health}) took {damageAmount} damage input.");
+            healthBar.Value = enemy.Health;
+            hpTextLabel.Text = $"{Math.Max(0, enemy.Health):F0} / {healthBar.MaxValue:F0}"; // Ensure health doesn't go below 0 visually
 
             if (enemy.Health <= 0)
             {
-                HandleEnemyDeath(enemy, managedEnemy);
+                HandleEnemyDefeat(enemy);
             }
         }
 
-        private void HandleEnemyDeath(IEntity enemy, ManagedEnemy managedEnemy)
+        private void HandleEnemyDefeat(IEntity defeatedEnemy)
         {
-            GD.Print($"EnemiesManager: Enemy '{enemy.Race}' has died.");
-            // Add any on-death logic here (e.g., drop loot, grant experience)
-            // Example: GetTree().Root.GetNode<LootManager>("LootManager").SpawnLoot(enemy.LootTable, managedEnemy.NodeInstance.GlobalPosition);
+            GD.Print($"{defeatedEnemy.Race} has been defeated!");
 
-            managedEnemy.CleanUp();
-            _activeEnemies.Remove(enemy);
-        }
-
-        public bool RemoveEnemy(IEntity enemy)
-        {
-            if (enemy != null && _activeEnemies.TryGetValue(enemy, out ManagedEnemy managedEnemy))
+            if (_enemyVisualsMap.TryGetValue(defeatedEnemy, out Node2D visualNode))
             {
-                GD.Print($"EnemiesManager: Manually removing enemy '{enemy.Race}'.");
-                managedEnemy.CleanUp();
-                _activeEnemies.Remove(enemy);
-                return true;
+                visualNode.QueueFree(); // Remove visual from the scene tree
+                _enemyVisualsMap.Remove(defeatedEnemy);
             }
-            return false;
+
+            _activeEnemies.Remove(defeatedEnemy);
+            
+            OnEnemyDefeated?.Invoke(defeatedEnemy);
+
+            if (_activeEnemies.Count == 0)
+            {
+                OnAllEnemiesDefeated?.Invoke();
+                GD.Print("All enemies defeated!");
+            }
         }
 
-        public void ClearAllEnemies()
+        // Method for a specific enemy to perform its attack
+        // The caller (e.g., a battle turn manager) would decide which enemy attacks and who the target is.
+        // This method just returns the damage value from the chosen enemy.
+        public double GetEnemyAttackDamage(IEntity attackingEnemy)
         {
-            List<IEntity> enemiesToClear = new List<IEntity>(_activeEnemies.Keys);
-            foreach (IEntity enemyKey in enemiesToClear)
+            if (!_activeEnemies.Contains(attackingEnemy))
             {
-                if (_activeEnemies.TryGetValue(enemyKey, out ManagedEnemy managedEnemy))
-                {
-                    managedEnemy.CleanUp();
-                }
+                GD.Print($"EnemiesManager: {attackingEnemy.Race} is not an active enemy, cannot attack.");
+                return 0;
             }
+            return attackingEnemy.Attack();
+        }
+
+        // Get a list of currently active enemies (returns a copy to prevent external modification)
+        public List<IEntity> GetActiveEnemies()
+        {
+            return new List<IEntity>(_activeEnemies);
+        }
+
+        // Get a random active enemy (e.g., for player targeting)
+        public IEntity GetRandomActiveEnemy()
+        {
+            if (_activeEnemies.Count == 0)
+            {
+                return null;
+            }
+            Random rand = new Random();
+            int index = rand.Next(_activeEnemies.Count);
+            return _activeEnemies[index];
+        }
+
+        // Check if there are any active enemies left
+        public bool HasActiveEnemies()
+        {
+            return _activeEnemies.Count > 0;
+        }
+
+        // Optional: Clean up resources if the manager is no longer needed
+        // (e.g., if it's part of a scene that's being freed)
+        public void Cleanup()
+        {
+            foreach (var visualNode in _enemyVisualsMap.Values)
+            {
+                visualNode.QueueFree();
+            }
+            _enemyVisualsMap.Clear();
             _activeEnemies.Clear();
-            GD.Print("EnemiesManager: All active enemies cleared.");
-        }
-
-        public Node2D GetEnemyNode(IEntity enemy)
-        {
-            if (enemy != null && _activeEnemies.TryGetValue(enemy, out ManagedEnemy managedEnemy))
-            {
-                return managedEnemy.NodeInstance;
-            }
-            return null;
-        }
-
-        public IEnumerable<IEntity> GetAllActiveEnemies()
-        {
-            return _activeEnemies.Keys.ToList();
+            GD.Print("EnemiesManager cleaned up.");
         }
     }
 }
