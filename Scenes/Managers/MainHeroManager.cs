@@ -27,12 +27,16 @@ namespace Scenes.Managers
             _heroNameLabel = _heroDisplayNode.GetNode<Label>("VBoxContainer/CenterContainer/Label");
             _heroHealthBar = _heroDisplayNode.GetNode<ProgressBar>("VBoxContainer/CenterContainer3/ProgressBar");
             _heroHealthLabel = _heroDisplayNode.GetNode<Label>("VBoxContainer/CenterContainer3/ProgressBar/HPLabel");
-            // _heroSprite = _heroDisplayNode.GetNode<TextureRect>("VBoxContainer/CenterContainer2/TextureRect");
+            TextureRect icon = _heroDisplayNode.GetNode<TextureRect>("VBoxContainer/CenterContainer2/TextureRect");
 
             if (_heroNameLabel == null || _heroHealthBar == null || _heroHealthLabel == null)
             {
                 GD.PrintErr("MainHeroManager: Critical UI elements (Name, HealthBar, HPLabel) not found in heroDisplayNode. Check paths relative to Entity.tscn root (Control)!");
             }
+
+            string texturePath = $"res://Assets/{heroName.ToLower()}.jpg";
+            Texture2D texture = GD.Load<Texture2D>(texturePath);
+            icon.Texture = texture;
 
             _moneyLabelNode = moneyLabel ?? throw new ArgumentNullException(nameof(moneyLabel));
             _levelLabelNode = levelLabel ?? throw new ArgumentNullException(nameof(levelLabel));
