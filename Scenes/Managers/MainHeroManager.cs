@@ -6,45 +6,41 @@ namespace Scenes.Managers
 {
     public class MainHeroManager
     {
-        private Control _heroDisplayNode; // Changed from Node2D to Control
+        private Control _heroDisplayNode; // Root of Entity.tscn instance for hero
         private MainHero _hero; // Instance of your MainHero singleton
 
         // UI Elements within the heroDisplayNode
         private Label _heroNameLabel;
         private ProgressBar _heroHealthBar;
         private Label _heroHealthLabel;
-        // private TextureRect _heroSprite; // If you need to access the TextureRect directly
+        // private TextureRect _heroSprite; // If you need to access/change the TextureRect
 
         // External UI Elements
         private Label _moneyLabelNode;
         private Label _levelLabelNode;
 
-        // Constructor updated to accept Control and use correct paths
         public MainHeroManager(Control heroDisplayNode, string heroName, Label moneyLabel, Label levelLabel)
         {
             if (heroDisplayNode == null) throw new ArgumentNullException(nameof(heroDisplayNode));
             _heroDisplayNode = heroDisplayNode;
 
-            // Get UI nodes from the heroDisplayNode using paths from Entity.tscn
-            // Assuming Entity.tscn's structure: Control -> VBoxContainer -> specific containers
             _heroNameLabel = _heroDisplayNode.GetNode<Label>("VBoxContainer/CenterContainer/Label");
             _heroHealthBar = _heroDisplayNode.GetNode<ProgressBar>("VBoxContainer/CenterContainer3/ProgressBar");
             _heroHealthLabel = _heroDisplayNode.GetNode<Label>("VBoxContainer/CenterContainer3/ProgressBar/HPLabel");
-            // _heroSprite = _heroDisplayNode.GetNode<TextureRect>("VBoxContainer/CenterContainer2/TextureRect"); // Example if needed
+            // _heroSprite = _heroDisplayNode.GetNode<TextureRect>("VBoxContainer/CenterContainer2/TextureRect");
 
             if (_heroNameLabel == null || _heroHealthBar == null || _heroHealthLabel == null)
             {
                 GD.PrintErr("MainHeroManager: Critical UI elements (Name, HealthBar, HPLabel) not found in heroDisplayNode. Check paths relative to Entity.tscn root (Control)!");
-                // Consider throwing an exception or having a fallback if these are essential
             }
 
             _moneyLabelNode = moneyLabel ?? throw new ArgumentNullException(nameof(moneyLabel));
             _levelLabelNode = levelLabel ?? throw new ArgumentNullException(nameof(levelLabel));
 
             _hero = MainHero.Instance;
-            _hero.HeroSelect(heroName); // Selects the hero type within MainHero
+            _hero.HeroSelect(heroName);
 
-            if (_heroNameLabel != null) _heroNameLabel.Text = _hero.GetName(); // Use GetName() from MainHero
+            if (_heroNameLabel != null) _heroNameLabel.Text = _hero.GetName();
             InitialUISetup();
         }
 
@@ -55,28 +51,13 @@ namespace Scenes.Managers
             UpdateLevelUI();
         }
 
-        public void ApplyDamage(int damage) // Kept for potential other uses
-        {
-            if (_hero == null) return;
-            _hero.TakeDamage((double)damage); // MainHero.TakeDamage expects a double
-            UpdateHealthUI();
-
-            if (!IsHeroAlive())
-            {
-                GD.Print($"{_hero.GetName()} has been defeated (from ApplyDamage)!");
-            }
-        }
-
         private void UpdateHealthUI()
         {
             if (_hero == null || _heroHealthBar == null || _heroHealthLabel == null) return;
-
             double currentHealth = _hero.GetCurrentHealth();
             double maxHealth = _hero.GetMaxHealth();
-
             _heroHealthBar.MaxValue = maxHealth;
             _heroHealthBar.Value = Math.Max(0, currentHealth);
-
             _heroHealthLabel.Text = $"{_heroHealthBar.Value:F0}/{maxHealth:F0}";
         }
 
@@ -104,11 +85,10 @@ namespace Scenes.Managers
             if (_hero == null) return;
             int previousLevel = _hero.GetLevel();
             _hero.AddExperience(experience);
-
             if (_hero.GetLevel() > previousLevel)
             {
                 UpdateLevelUI();
-                UpdateHealthUI(); // Max health might change
+                UpdateHealthUI();
             }
         }
 
@@ -137,7 +117,6 @@ namespace Scenes.Managers
             if (_hero == null) { GD.PrintErr("MainHeroManager: Hero instance null."); return; }
             _hero.TakeDamage(damageTaken);
             UpdateHealthUI();
-
             if (!IsHeroAlive())
             {
                 GD.Print($"{_hero.GetName()} has been defeated!");

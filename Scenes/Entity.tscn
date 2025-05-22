@@ -6,12 +6,14 @@
 size = Vector2(128, 128)
 
 [node name="Control" type="Control"]
+custom_minimum_size = Vector2(128, 128)
 layout_mode = 3
-anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_right = -1024.0
-offset_bottom = -520.0
+offset_left = -64.0
+offset_top = -64.0
+offset_right = -1088.0
+offset_bottom = -584.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -57,3 +59,4 @@ vertical_alignment = 1
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 position = Vector2(64, 64)
 shape = SubResource("RectangleShape2D_rnyw1")
+debug_color = Color(0.128196, 0.576865, 0.791964, 0.42)

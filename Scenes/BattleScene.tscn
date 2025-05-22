@@ -33,24 +33,18 @@ text = "dfdfdf"
 [node name="HBoxContainer2" type="HBoxContainer" parent="Control/VBoxContainer"]
 custom_minimum_size = Vector2(576, 540)
 layout_mode = 2
+alignment = 1
 
 [node name="CenterContainer" type="CenterContainer" parent="Control/VBoxContainer/HBoxContainer2"]
 custom_minimum_size = Vector2(571, 0)
 layout_mode = 2
 
-[node name="Button" type="Button" parent="Control/VBoxContainer/HBoxContainer2/CenterContainer"]
-layout_mode = 2
-text = "Hero
-"
-
-[node name="CenterContainer2" type="CenterContainer" parent="Control/VBoxContainer/HBoxContainer2"]
+[node name="GridContainer" type="GridContainer" parent="Control/VBoxContainer/HBoxContainer2"]
 custom_minimum_size = Vector2(571, 0)
 layout_mode = 2
-
-[node name="Button" type="Button" parent="Control/VBoxContainer/HBoxContainer2/CenterContainer2"]
-layout_mode = 2
-text = "Enemy
-"
+size_flags_horizontal = 4
+size_flags_vertical = 4
+columns = 4
 
 [node name="HBoxContainer3" type="HBoxContainer" parent="Control/VBoxContainer"]
 custom_minimum_size = Vector2(0, 50)
