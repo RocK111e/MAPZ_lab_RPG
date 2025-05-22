@@ -9,6 +9,8 @@ namespace Scenes.Managers
         private Control _heroDisplayNode; // Root of Entity.tscn instance for hero
         private MainHero _hero; // Instance of your MainHero singleton
 
+        private string _heroName; // Name of the hero
+
         // UI Elements within the heroDisplayNode
         private Label _heroNameLabel;
         private ProgressBar _heroHealthBar;
@@ -21,6 +23,7 @@ namespace Scenes.Managers
 
         public MainHeroManager(Control heroDisplayNode, string heroName, Label moneyLabel, Label levelLabel)
         {
+            _heroName = heroName;
             if (heroDisplayNode == null) throw new ArgumentNullException(nameof(heroDisplayNode));
             _heroDisplayNode = heroDisplayNode;
 
@@ -56,12 +59,16 @@ namespace Scenes.Managers
             _heroNameLabel = _heroDisplayNode.GetNode<Label>("VBoxContainer/CenterContainer/Label");
             _heroHealthBar = _heroDisplayNode.GetNode<ProgressBar>("VBoxContainer/CenterContainer3/ProgressBar");
             _heroHealthLabel = _heroDisplayNode.GetNode<Label>("VBoxContainer/CenterContainer3/ProgressBar/HPLabel");
-            // _heroSprite = _heroDisplayNode.GetNode<TextureRect>("VBoxContainer/CenterContainer2/TextureRect");
+            TextureRect icon = _heroDisplayNode.GetNode<TextureRect>("VBoxContainer/CenterContainer2/TextureRect");
 
             if (_heroNameLabel == null || _heroHealthBar == null || _heroHealthLabel == null)
             {
                 GD.PrintErr("MainHeroManager: Critical UI elements (Name, HealthBar, HPLabel) not found in heroDisplayNode. Check paths relative to Entity.tscn root (Control)!");
             }
+
+            string texturePath = $"res://Assets/{_heroName.ToLower()}.jpg";
+            Texture2D texture = GD.Load<Texture2D>(texturePath);
+            icon.Texture = texture;
 
             _moneyLabelNode = moneyLabel ?? throw new ArgumentNullException(nameof(moneyLabel));
             _levelLabelNode = levelLabel ?? throw new ArgumentNullException(nameof(levelLabel));

@@ -28,7 +28,7 @@ alignment = 1
 
 [node name="RoundLabel" type="Label" parent="Control/VBoxContainer/HBoxContainer"]
 layout_mode = 2
-text = "dfdfdf"
+text = "Round: __"
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="Control/VBoxContainer"]
 custom_minimum_size = Vector2(576, 540)
