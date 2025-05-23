@@ -12,13 +12,13 @@ public partial class StartMenu : Control
 	public override void _Ready()
 	{
 		GD.Print("StartMenu ready!");
-        
+		
 		_archerButton = GetNode<Button>("CenterContainer/VBoxContainer/ArcherButton");
 		_swordsmanButton = GetNode<Button>("CenterContainer/VBoxContainer/SwordsmanButton");
 		_pirateButton = GetNode<Button>("CenterContainer/VBoxContainer/PirateButton");
 
 
-        _archerButton.Pressed += () => OnHeroSelected(HeroEnum.ARCHER);
+		_archerButton.Pressed += () => OnHeroSelected(HeroEnum.ARCHER);
 		_swordsmanButton.Pressed += () => OnHeroSelected(HeroEnum.SWORDSMAN);
 		_pirateButton.Pressed += () => OnHeroSelected(HeroEnum.PIRATE);
 		GD.Print("Binded buttons!");

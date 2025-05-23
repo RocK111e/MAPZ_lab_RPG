@@ -146,6 +146,7 @@ public partial class BattleScene : Node2D
 			if (!_mainHeroManager.IsHeroAlive())
 			{
 				GD.Print("Hero has been defeated!");
+				GetTree().ChangeSceneToFile("res://Scenes/LoseScreen.tscn");
 				break;
 			}
 		}
