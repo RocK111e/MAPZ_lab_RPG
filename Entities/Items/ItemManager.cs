@@ -24,7 +24,7 @@ namespace MAPZ_lab_RPG.Entities.Items
             for (int i = 0; i < itemCount; i++)
             {
                 int choice = rand.Next(0, items.Count);
-                itemList.Add(items[choice]);
+                itemList.Add(items[choice].Copy());
             }
             
             return itemList;

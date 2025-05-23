@@ -171,25 +171,26 @@ public partial class BattleScene : Node2D
 		_selectedEnemyVisual = null;
 		_previouslySelectedVisual = null;
 
-		Label victoryLabel = new Label
-		{
-			Text = "VICTORY!",
-			HorizontalAlignment = HorizontalAlignment.Center,
-			VerticalAlignment = VerticalAlignment.Center,
-			CustomMinimumSize = new Vector2(200, 50)
-		};
-		victoryLabel.SetAnchorsPreset(Control.LayoutPreset.Center);
+		int coinsForRound = HandleCoinsReward();
+		int expirienceForRound = HandleExpirienceReward();
 
-		var uiRoot = GetNodeOrNull<Control>("Control");
-		if (uiRoot != null) uiRoot.AddChild(victoryLabel);
-		else
-		{
-			AddChild(victoryLabel);
-			GD.PrintErr("Could not find 'Control' node to add VictoryLabel. Added to BattleScene root.");
-		}
+		_mainHeroManager.GainCoins(coinsForRound);
+		_mainHeroManager.AddExperienceAndLevelUpCheck(expirienceForRound);
 
 		GameData.CurrentRound++;
 		GetTree().ChangeSceneToFile("res://Scenes/Shop.tscn");
+	}
+
+	private int HandleCoinsReward()
+	{
+		int coinsForRound = 50 + 5 * GameData.CurrentRound;
+		return coinsForRound;
+	}
+
+	private int HandleExpirienceReward()
+	{
+		int expirienceForRound = 30 + 20 * GameData.CurrentRound;
+		return expirienceForRound;
 	}
 
 	public override void _ExitTree()
