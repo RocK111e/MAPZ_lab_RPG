@@ -2,18 +2,18 @@ using MAPZ_lab_RPG.Entities.Items;
 using MAPZ_lab_RPG.Entities.Heroes;
 using System;
 using System.Collections.Generic;
+
 namespace MAPZ_lab_RPG.Entities.Heroes.HeroTypes
 {
-
-    public class Swordsman : IHero
+    public class Hero : IHero
     {
-        public Swordsman()
+        public Hero(double health, double damage, double armor, string name)
         {
-            MaxHealth = 150; // Increased HP
-            CurrentHealth = 150;
-            Damage = 10; // Reduced damage
-            Armor = 10; // Increased armor
-            Name = "Swordsman";
+            MaxHealth = health;
+            Health = health;
+            Damage = damage;
+            Armor = armor;
+            Name = name;
             Coins = 0;
             Experience = 0;
             Level = 1;
@@ -21,18 +21,16 @@ namespace MAPZ_lab_RPG.Entities.Heroes.HeroTypes
             Inventory = new List<IItem>();
         }
 
-        public double Atack()
+        public double Attack()
         {
-            System.Console.Out.WriteLine("Swordsman is swinging sword");
             return Damage;
         }
 
         public double TakeDamage(double damageTaken)
         {
             double damage = damageTaken / (1 + (Armor / 100));
-            CurrentHealth -= damage;
-            System.Console.Out.WriteLine("Swordsman is being attacked");
-            return CurrentHealth;
+            Health -= damage;
+            return Health;
         }
 
         public void Upgrade(string attribute)
@@ -40,13 +38,13 @@ namespace MAPZ_lab_RPG.Entities.Heroes.HeroTypes
             switch (attribute)
             {
                 case "Damage":
-                    Damage += 3; // Lower damage increase
+                    Damage += 5;
                     break;
                 case "Armor":
-                    Armor += 3; // Higher armor increase
+                    Armor += 2;
                     break;
                 case "Health":
-                    MaxHealth += 30; // Higher health increase
+                    MaxHealth += 20;
                     break;
                 default:
                     System.Console.Out.WriteLine("Invalid attribute");
@@ -55,10 +53,9 @@ namespace MAPZ_lab_RPG.Entities.Heroes.HeroTypes
         }
         public string Name { get; set; }
         public double MaxHealth { get; set; }
-        public double CurrentHealth { get; set; }
+        public double Health { get; set; }
         public double Damage { get; set; }
         public double Armor { get; set; }
-
         public int Coins { get; set; }
         public int Experience { get; set; }
         public int Level { get; set; }

@@ -18,14 +18,14 @@ public partial class StartMenu : Control
 		_pirateButton = GetNode<Button>("CenterContainer/VBoxContainer/PirateButton");
 
 
-		_archerButton.Pressed += () => OnHeroSelected(HeroEnum.ARCHER);
-		_swordsmanButton.Pressed += () => OnHeroSelected(HeroEnum.SWORDSMAN);
-		_pirateButton.Pressed += () => OnHeroSelected(HeroEnum.PIRATE);
+		_archerButton.Pressed += () => OnHeroSelected("Archer");
+		_swordsmanButton.Pressed += () => OnHeroSelected("Swordsman");
+		_pirateButton.Pressed += () => OnHeroSelected("Pirate");
 		GD.Print("Binded buttons!");
 
 	}
 
-	private void OnHeroSelected(HeroEnum heroName)
+	private void OnHeroSelected(string heroName)
 	{
 		GD.Print($"Hero selected: {heroName}");
 

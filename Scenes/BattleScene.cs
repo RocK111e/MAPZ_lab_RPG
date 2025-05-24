@@ -25,7 +25,7 @@ public partial class BattleScene : Node2D
 		var RoundLabel = GetNode<Label>("Control/VBoxContainer/HBoxContainer/RoundLabel");
 		RoundLabel.Text = $"Round: {GameData.CurrentRound}";
 	
-		string selectedHero = MainHero.Instance.HeroEnumToStr(GameData.SelectedHeroName);
+		string selectedHero = GameData.SelectedHeroName;
 
 		_heroDisplayNode = GD.Load<PackedScene>("res://Scenes/Entity.tscn").Instantiate<Control>();
 		var heroContainer = GetNode<CenterContainer>("Control/VBoxContainer/HBoxContainer2/CenterContainer"); 
@@ -36,7 +36,7 @@ public partial class BattleScene : Node2D
 		_moneyLabel = GetNode<Label>("Control/VBoxContainer/HBoxContainer3/MoneyLabel");
 		_levelLabel = GetNode<Label>("Control/VBoxContainer/HBoxContainer3/LevelLabel");
 		if (_moneyLabel == null || _levelLabel == null) { GD.PrintErr("BattleScene: MoneyLabel or LevelLabel not found!"); GetTree().Quit(); return; }
-		_mainHeroManager = GameData.MainHeroManager ?? new MainHeroManager(_heroDisplayNode, GameData.SelectedHeroName, _moneyLabel, _levelLabel);
+		_mainHeroManager = GameData.MainHeroManager ?? new MainHeroManager(_heroDisplayNode, _moneyLabel, _levelLabel);
 		GD.Print("MainHeroManager initialized.");
 		GameData.MainHeroManager = _mainHeroManager;
 		_mainHeroManager.SetNodes(_heroDisplayNode, _moneyLabel, _levelLabel);

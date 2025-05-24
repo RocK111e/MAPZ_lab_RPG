@@ -6,9 +6,9 @@ namespace MAPZ_lab_RPG.Entities
     {
         double Attack();
         double TakeDamage(double damageTaken);
-        double Health { get; }
-        double Damage { get; }
-        double Armor { get; }
-        string Name { get; }
+        double Health { get; set; }
+        double Damage { get; set; }
+        double Armor { get; set; }
+        string Name { get; set; }
     }
 }

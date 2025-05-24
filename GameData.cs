@@ -6,7 +6,7 @@ public partial class GameData : Node
 {
 	public GameData() { }
 
-	public static HeroEnum SelectedHeroName { get; set; }
+	public static string SelectedHeroName { get; set; }
 	public static int CurrentRound { get; set; } = 1;
 	public static MainHeroManager MainHeroManager { get; set;} = null;
 }

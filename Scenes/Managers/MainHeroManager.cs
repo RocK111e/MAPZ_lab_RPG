@@ -18,9 +18,9 @@ namespace Scenes.Managers
         private Label _moneyLabelNode;
         private Label _levelLabelNode;
 
-        public MainHeroManager(Control heroDisplayNode, HeroEnum heroName, Label moneyLabel, Label levelLabel)
+        public MainHeroManager(Control heroDisplayNode, Label moneyLabel, Label levelLabel)
         {
-            _heroName = MainHero.Instance.HeroEnumToStr(heroName) ;
+            _heroName = MainHero.Instance.GetName();
             if (heroDisplayNode == null) throw new ArgumentNullException(nameof(heroDisplayNode));
             _heroDisplayNode = heroDisplayNode;
 
@@ -42,7 +42,7 @@ namespace Scenes.Managers
             _levelLabelNode = levelLabel ?? throw new ArgumentNullException(nameof(levelLabel));
 
             _hero = MainHero.Instance;
-            _hero.HeroSelect(heroName);
+            _hero.HeroSelect(_heroName);
 
             if (_heroNameLabel != null) _heroNameLabel.Text = _hero.GetName();
             InitialUISetup();

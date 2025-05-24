@@ -17,9 +17,9 @@ namespace MAPZ_lab_RPG.Entities.Enemies
             Health -= damage;
             return Health;
         }
-        public double Health { get; private set; }
-        public double Damage { get; private set; }
-        public double Armor { get; private set; }
-        public string Name { get; private set; }
+        public double Health { get; set; }
+        public double Damage { get; set; }
+        public double Armor { get; set; }
+        public string Name { get; set; }
     }
 }

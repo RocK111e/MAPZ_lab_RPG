@@ -6,30 +6,10 @@ using MAPZ_lab_RPG.Entities.Heroes.HeroTypes;
 
 namespace MAPZ_lab_RPG.Entities.Heroes
 {
-    public enum HeroEnum 
-    {
-        ARCHER,
-        SWORDSMAN,
-        PIRATE
-    }
     public class MainHero
     {
-        public string HeroEnumToStr(HeroEnum hero)
-        {
-            switch (hero)
-            {
-                case HeroEnum.ARCHER:
-                    return "Archer";
-                case HeroEnum.SWORDSMAN:
-                    return "Swordsman";
-                case HeroEnum.PIRATE:
-                    return "Pirate";
-                default:
-                    throw new ArgumentException("Invalid hero enum value");
-            }
-        }
+        private readonly EntityReader entityReader;
         private static MainHero _instance;
-
         public static MainHero Instance
         {
             get
@@ -41,27 +21,20 @@ namespace MAPZ_lab_RPG.Entities.Heroes
                 return _instance;
             }
         }
-
         private MainHero()
         {
+            entityReader = new EntityReader();
+        }
+        public void HeroSelect(string heroName)
+        {
+            var heroData = entityReader.GetHeroData(heroName);
+            hero = new Hero(heroData.Health, heroData.Damage, heroData.Armor, heroData.Name);
         }
 
-        public void HeroSelect(HeroEnum hero_name)
+        public List<string> GetHeroNames()
         {
-            switch (hero_name)
-            {
-                case HeroEnum.ARCHER:
-                    hero = new Archer();
-                    break;
-                case HeroEnum.SWORDSMAN:
-                    hero = new Swordsman();
-                    break;
-                case HeroEnum.PIRATE:
-                    hero = new Pirate();
-                    break;
-                default:
-                    throw new ArgumentException("Invalid hero name");
-            }
+            List<string> heroNames = entityReader.ReadHeroNames();
+            return heroNames;
         }
 
         public double Atack()
@@ -111,7 +84,7 @@ namespace MAPZ_lab_RPG.Entities.Heroes
         }
         public double GetCurrentHealth()
         {
-            return hero.CurrentHealth;
+            return hero.Health;
         }
         public double GetMaxHealth()
         {

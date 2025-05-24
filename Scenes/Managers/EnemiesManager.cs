@@ -41,7 +41,7 @@ namespace Scenes.Managers
                 return;
             }
 
-            _activeEnemies = EnemyCreator.Instance.CreateEnemies(level);
+            _activeEnemies = EntityCreator.Instance.CreateEnemies(level);
             _enemyVisualsMap = new Dictionary<IEntity, Control>();
 
             SpawnAndDisplayEnemies();

@@ -15,9 +15,6 @@
         "name": "Troll",
         "Health": 25,
         "Damage": 2,
-        "Armor": 5,
-        "Aditional": {
-            "coinmult": 2.5
-        }
+        "Armor": 5
     }
 ]

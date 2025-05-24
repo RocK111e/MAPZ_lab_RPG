@@ -1,0 +1,20 @@
+[
+    {
+        "name": "Archer",
+        "Health": 100,
+        "Damage": 15,
+        "Armor": 5
+    },
+    {
+        "name": "Pirate",
+        "Health": 125,
+        "Damage": 12,
+        "Armor": 7
+    },
+    {
+        "name": "Swordsman",
+        "Health": 150,
+        "Damage": 10,
+        "Armor": 10
+    }
+]
