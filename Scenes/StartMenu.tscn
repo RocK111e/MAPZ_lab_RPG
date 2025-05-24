@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://bqgmnggsrj6f4"]
 
-[ext_resource type="Script" uid="uid://6ka8cxrl1wof" path="res://Scenes/StartMenu.cs" id="1_d3352"]
+[ext_resource type="Script" uid="uid://bsfvpmsodulbe" path="res://Scenes/StartMenu.cs" id="1_d3352"]
 
 [node name="StartMenu" type="Control"]
 layout_mode = 3
@@ -12,11 +12,10 @@ grow_vertical = 2
 script = ExtResource("1_d3352")
 
 [node name="CenterContainer" type="CenterContainer" parent="."]
-layout_mode = 0
+layout_mode = 1
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
 layout_mode = 2
@@ -30,20 +29,36 @@ text = "Choose Your Hero:"
 horizontal_alignment = 1
 
 [node name="HSeparator" type="HSeparator" parent="CenterContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 10)
+custom_minimum_size = Vector2(500, 10)
 layout_mode = 2
 
-[node name="ArcherButton" type="Button" parent="CenterContainer/VBoxContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="CenterContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CenterContainer/VBoxContainer/ScrollContainer"]
+layout_mode = 2
+
+[node name="ArcherButton" type="Button" parent="CenterContainer/VBoxContainer/ScrollContainer/HBoxContainer"]
 custom_minimum_size = Vector2(150, 40)
 layout_mode = 2
 text = "Archer"
 
-[node name="SwordsmanButton" type="Button" parent="CenterContainer/VBoxContainer"]
+[node name="SwordsmanButton" type="Button" parent="CenterContainer/VBoxContainer/ScrollContainer/HBoxContainer"]
 custom_minimum_size = Vector2(150, 40)
 layout_mode = 2
 text = "Swordsman"
 
-[node name="PirateButton" type="Button" parent="CenterContainer/VBoxContainer"]
+[node name="PirateButton" type="Button" parent="CenterContainer/VBoxContainer/ScrollContainer/HBoxContainer"]
 custom_minimum_size = Vector2(150, 40)
 layout_mode = 2
 text = "Pirate"
+
+[node name="Button2" type="Button" parent="CenterContainer/VBoxContainer/ScrollContainer/HBoxContainer"]
+layout_mode = 2
+text = "fgfgfgfgfg"
+
+[node name="Button" type="Button" parent="CenterContainer/VBoxContainer/ScrollContainer/HBoxContainer"]
+layout_mode = 2
+text = "AAAAAAAAAAAAA
+"
