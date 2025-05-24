@@ -64,7 +64,7 @@ namespace Scenes.Managers
 
                 if (enemyVisualInstance == null)
                 {
-                    GD.PrintErr($"Failed to instantiate enemy visual for {enemy.Race}.");
+                    GD.PrintErr($"Failed to instantiate enemy visual for {enemy.Name}.");
                     continue;
                 }
 
@@ -75,17 +75,17 @@ namespace Scenes.Managers
 
                 if (nameLabel == null || healthBar == null || hpTextLabel == null)
                 {
-                    GD.PrintErr($"Entity.tscn for {enemy.Race} is missing UI child nodes (Label, ProgressBar, HPLabel). Check paths.");
+                    GD.PrintErr($"Entity.tscn for {enemy.Name} is missing UI child nodes (Label, ProgressBar, HPLabel). Check paths.");
                     enemyVisualInstance.QueueFree();
                     continue;
                 }
 
-                nameLabel.Text = enemy.Race;
+                nameLabel.Text = enemy.Name;
                 healthBar.MaxValue = enemy.Health;
                 healthBar.Value = enemy.Health;
                 hpTextLabel.Text = $"{enemy.Health:F0} / {healthBar.MaxValue:F0}";
 
-                string texturePath = $"res://Assets/{enemy.Race.ToLower()}.jpg";
+                string texturePath = $"res://Assets/{enemy.Name.ToLower()}.jpg";
                 Texture2D texture = GD.Load<Texture2D>(texturePath);
                 icon.Texture = texture;
 
@@ -94,7 +94,7 @@ namespace Scenes.Managers
                 _enemyPlacementNode.AddChild(enemyVisualInstance);
                 _enemyVisualsMap.Add(enemy, enemyVisualInstance);
 
-                GD.Print($"EnemiesManager: Added {enemy.Race} to parent container. Global position will be determined by container.");
+                GD.Print($"EnemiesManager: Added {enemy.Name} to parent container. Global position will be determined by container.");
             }
         }
 
@@ -102,7 +102,7 @@ namespace Scenes.Managers
         {
             if (!_activeEnemies.Contains(enemy) || !_enemyVisualsMap.ContainsKey(enemy))
             {
-                GD.Print($"EnemiesManager: Attempted to damage non-existent enemy: {enemy?.Race ?? "Unknown"}.");
+                GD.Print($"EnemiesManager: Attempted to damage non-existent enemy: {enemy?.Name ?? "Unknown"}.");
                 return;
             }
             enemy.TakeDamage(damageAmount);
@@ -123,7 +123,7 @@ namespace Scenes.Managers
 
         private void HandleEnemyDefeat(IEntity defeatedEnemy)
         {
-            GD.Print($"{defeatedEnemy.Race} has been defeated!");
+            GD.Print($"{defeatedEnemy.Name} has been defeated!");
             if (_enemyVisualsMap.TryGetValue(defeatedEnemy, out Control visualNode))
             {
                 visualNode.QueueFree();

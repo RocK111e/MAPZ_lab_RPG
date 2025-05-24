@@ -1,0 +1,23 @@
+[
+    {
+        "name": "Ork",
+        "Health": 40,
+        "Damage": 1,
+        "Armor": 8
+    },
+    {
+        "name": "Goblin",
+        "Health": 15,
+        "Damage": 3,
+        "Armor": 3
+    },
+    {
+        "name": "Troll",
+        "Health": 25,
+        "Damage": 2,
+        "Armor": 5,
+        "Aditional": {
+            "coinmult": 2.5
+        }
+    }
+]
