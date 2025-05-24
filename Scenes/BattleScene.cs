@@ -69,7 +69,7 @@ public partial class BattleScene : Node2D
 			return;
 		}
 
-		GD.Print($"BattleScene: Clicked! Target: {enemy.Race}");
+		GD.Print($"BattleScene: Clicked! Target: {enemy.Name}");
 
 		if (_previouslySelectedVisual != null && IsInstanceValid(_previouslySelectedVisual) && _previouslySelectedVisual != visual)
 		{
@@ -109,7 +109,7 @@ public partial class BattleScene : Node2D
 		}
 
 		double playerDamage = _mainHeroManager.GetHeroAttackDamage();
-		GD.Print($"Player attacks {targetEnemy.Race} for {playerDamage} potential damage.");
+		GD.Print($"Player attacks {targetEnemy.Name} for {playerDamage} potential damage.");
 		_enemiesManager.ApplyDamageToEnemy(targetEnemy, playerDamage);
 
 		if (targetEnemy.Health <= 0)
@@ -138,7 +138,7 @@ public partial class BattleScene : Node2D
 			if (enemy.Health <= 0) continue;
 
 			double enemyDamage = _enemiesManager.GetEnemyAttackDamage(enemy);
-			GD.Print($"{enemy.Race} attacks hero for {enemyDamage} damage.");
+			GD.Print($"{enemy.Name} attacks hero for {enemyDamage} damage.");
 			_mainHeroManager.HeroTakeDamage(enemyDamage);
 
 			await ToSignal(GetTree().CreateTimer(0.4f), SceneTreeTimer.SignalName.Timeout);
@@ -155,7 +155,7 @@ public partial class BattleScene : Node2D
 
 	private void HandleAnEnemyDefeated(IEntity defeatedEnemy)
 	{
-		GD.Print($"BattleScene: {defeatedEnemy.Race} was defeated!");
+		GD.Print($"BattleScene: {defeatedEnemy.Name} was defeated!");
 		if (_selectedEnemyTarget == defeatedEnemy)
 		{
 			_selectedEnemyTarget = null;

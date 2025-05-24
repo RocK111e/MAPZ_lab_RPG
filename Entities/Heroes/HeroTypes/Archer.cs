@@ -5,7 +5,6 @@ using System.Collections.Generic;
 
 namespace MAPZ_lab_RPG.Entities.Heroes.HeroTypes
 {
-
     public class Archer : IHero
     {
         public Archer()
@@ -59,7 +58,6 @@ namespace MAPZ_lab_RPG.Entities.Heroes.HeroTypes
         public double CurrentHealth { get; set; }
         public double Damage { get; set; }
         public double Armor { get; set; }
-
         public int Coins { get; set; }
         public int Experience { get; set; }
         public int Level { get; set; }

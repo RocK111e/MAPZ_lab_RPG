@@ -9,6 +9,6 @@ namespace MAPZ_lab_RPG.Entities
         double Health { get; }
         double Damage { get; }
         double Armor { get; }
-        string Race { get; }
+        string Name { get; }
     }
 }

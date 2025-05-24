@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ck1armg2l8fse"
-path="res://.godot/imported/trol.jpg-c4e699064754542fac45106228920ae3.ctex"
+path="res://.godot/imported/troll.jpg-19658b47585db4ae69c3ba7da9130074.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/trol.jpg"
-dest_files=["res://.godot/imported/trol.jpg-c4e699064754542fac45106228920ae3.ctex"]
+source_file="res://Assets/troll.jpg"
+dest_files=["res://.godot/imported/troll.jpg-19658b47585db4ae69c3ba7da9130074.ctex"]
 
 [params]
 
