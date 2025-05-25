@@ -12,30 +12,34 @@ namespace MAPZ_lab_RPG.Entities
         public double Damage { get; set; }
         public double Armor { get; set; }
     }
+    public class HeroData : EnemyData
+    {
+        public Dictionary<string, object> Additional { get; set; }
+    }
     public class EntityReader
     {
+        private const string heroJsonFilePath = "res://Assets/JSON/hero.json";
+        private const string enemyJsonFilePath = "res://Assets/JSON/enemy.json";
+
+        private readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        };
         public List<EnemyData> ReadEnemies()
         {
             List<EnemyData> enemies = new List<EnemyData>();
             try
             {
-                string jsonFilePath = "res://Assets/JSON/enemy.json";
-
-                if (!FileAccess.FileExists(jsonFilePath))
+                if (!FileAccess.FileExists(enemyJsonFilePath))
                 {
-                    GD.PrintErr($"File not found: {jsonFilePath}");
+                    GD.PrintErr($"File not found: {enemyJsonFilePath}");
                     return enemies;
                 }
 
-                using var file = FileAccess.Open(jsonFilePath, FileAccess.ModeFlags.Read);
+                using var file = FileAccess.Open(enemyJsonFilePath, FileAccess.ModeFlags.Read);
                 string jsonString = file.GetAsText();
 
-                var options = new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                };
-
-                enemies = JsonSerializer.Deserialize<List<EnemyData>>(jsonString, options);
+                enemies = JsonSerializer.Deserialize<List<EnemyData>>(jsonString, _jsonOptions);
 
                 if (enemies == null)
                 {
@@ -62,23 +66,16 @@ namespace MAPZ_lab_RPG.Entities
             List<string> heroNames = new List<string>();
             try
             {
-                string jsonFilePath = "res://Assets/JSON/hero.json";
-
-                if (!FileAccess.FileExists(jsonFilePath))
+                if (!FileAccess.FileExists(heroJsonFilePath))
                 {
-                    GD.PrintErr($"File not found: {jsonFilePath}");
+                    GD.PrintErr($"File not found: {heroJsonFilePath}");
                     return heroNames;
                 }
 
-                using var file = FileAccess.Open(jsonFilePath, FileAccess.ModeFlags.Read);
+                using var file = FileAccess.Open(heroJsonFilePath, FileAccess.ModeFlags.Read);
                 string jsonString = file.GetAsText();
 
-                var options = new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                };
-
-                List<EnemyData> heroes = JsonSerializer.Deserialize<List<EnemyData>>(jsonString, options);
+                List<HeroData> heroes = JsonSerializer.Deserialize<List<HeroData>>(jsonString, _jsonOptions);
 
                 if (heroes == null)
                 {
@@ -104,27 +101,20 @@ namespace MAPZ_lab_RPG.Entities
             }
         }
 
-        public EnemyData GetHeroData(string heroName)
+        public HeroData GetHeroData(string heroName)
         {
             try
             {
-                string jsonFilePath = "res://Assets/JSON/hero.json";
-
-                if (!FileAccess.FileExists(jsonFilePath))
+                if (!FileAccess.FileExists(heroJsonFilePath))
                 {
-                    GD.PrintErr($"File not found: {jsonFilePath}");
+                    GD.PrintErr($"File not found: {heroJsonFilePath}");
                     return null;
                 }
 
-                using var file = FileAccess.Open(jsonFilePath, FileAccess.ModeFlags.Read);
+                using var file = FileAccess.Open(heroJsonFilePath, FileAccess.ModeFlags.Read);
                 string jsonString = file.GetAsText();
 
-                var options = new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                };
-
-                List<EnemyData> heroes = JsonSerializer.Deserialize<List<EnemyData>>(jsonString, options);
+                List<HeroData> heroes = JsonSerializer.Deserialize<List<HeroData>>(jsonString, _jsonOptions);
 
                 if (heroes == null)
                 {

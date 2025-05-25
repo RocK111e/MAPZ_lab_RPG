@@ -1,5 +1,6 @@
 using Godot;
 using MAPZ_lab_RPG.Entities.Heroes;
+using Scenes.Managers;
 
 public partial class StartMenu : Control
 {
@@ -29,9 +30,10 @@ public partial class StartMenu : Control
 	{
 		GD.Print($"Hero selected: {heroName}");
 
+		MainHero.Instance.HeroSelect(heroName);
+
 		GameData.SelectedHeroName = heroName;
 
-		// Change to the battle scene
 		var error = GetTree().ChangeSceneToFile(BattleScenePath);
 		if (error != Error.Ok)
 		{

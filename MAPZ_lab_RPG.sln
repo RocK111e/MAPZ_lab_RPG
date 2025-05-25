@@ -1,0 +1,19 @@
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MAPZ_lab_RPG", "MAPZ_lab_RPG.csproj", "{EB7F7B8D-3554-4650-AB94-A8CC3FAB6223}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+	Debug|Any CPU = Debug|Any CPU
+	ExportDebug|Any CPU = ExportDebug|Any CPU
+	ExportRelease|Any CPU = ExportRelease|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EB7F7B8D-3554-4650-AB94-A8CC3FAB6223}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB7F7B8D-3554-4650-AB94-A8CC3FAB6223}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB7F7B8D-3554-4650-AB94-A8CC3FAB6223}.ExportDebug|Any CPU.ActiveCfg = ExportDebug|Any CPU
+		{EB7F7B8D-3554-4650-AB94-A8CC3FAB6223}.ExportDebug|Any CPU.Build.0 = ExportDebug|Any CPU
+		{EB7F7B8D-3554-4650-AB94-A8CC3FAB6223}.ExportRelease|Any CPU.ActiveCfg = ExportRelease|Any CPU
+		{EB7F7B8D-3554-4650-AB94-A8CC3FAB6223}.ExportRelease|Any CPU.Build.0 = ExportRelease|Any CPU
+	EndGlobalSection
+EndGlobal

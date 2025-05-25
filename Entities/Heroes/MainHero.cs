@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;using MAPZ_lab_RPG.Entities.Items;
+using System.Threading.Tasks;
+using MAPZ_lab_RPG.Entities.Items;
 using MAPZ_lab_RPG.Entities.Heroes.HeroTypes;
+using Godot;
 
 namespace MAPZ_lab_RPG.Entities.Heroes
 {
@@ -28,7 +30,8 @@ namespace MAPZ_lab_RPG.Entities.Heroes
         public void HeroSelect(string heroName)
         {
             var heroData = entityReader.GetHeroData(heroName);
-            hero = new Hero(heroData.Health, heroData.Damage, heroData.Armor, heroData.Name);
+            //GD.Print($"\n\nHealth = {heroData.Health}\nDamage = {heroData.Damage}\nArmor = {heroData.Armor}\nName = {heroData.Name}\nAdditional = {heroData.Additional.Keys} : {heroData.Additional["CoinMultiply"]}");
+            hero = new Hero(heroData.Health, heroData.Damage, heroData.Armor, heroData.Name, heroData.Additional);
         }
 
         public List<string> GetHeroNames()
@@ -39,7 +42,7 @@ namespace MAPZ_lab_RPG.Entities.Heroes
 
         public double Atack()
         {
-            return hero.Atack();
+            return hero.Attack();
         }
 
         public double TakeDamage(double damageTaken)
