@@ -3,31 +3,30 @@ using System.Collections.Generic;
 
 namespace MAPZ_lab_RPG.Entities.Enemies
 {
-	public class EnemyCreator
+	public class EntityCreator
 	{
-		private static readonly EnemyCreator _instance = new EnemyCreator();
+		private static readonly EntityCreator _instance = new EntityCreator();
 
-		public static EnemyCreator Instance
+		public static EntityCreator Instance
 		{
 			get { return _instance; }
 		}
 
-		private EnemyCreator()
+		private EntityCreator()
 		{
-			entityFactories = new List<EntityFactory>();
+			enemyFactories = new List<EntityFactory>();
 
 			EntityReader entityReader = new EntityReader();
-			List<Entity> enemies = entityReader.ReadEnemies();
-			Console.Out.WriteLine("\n\n\n enemies: ", enemies, "\n\n\n");
+			var enemiesData = entityReader.ReadEnemies();
 
-			foreach (Entity enemy in enemies)
+			foreach (var enemyData in enemiesData)
 			{
-				EntityFactory entityFactory = new EntityFactory(enemy.Health, enemy.Damage, enemy.Armor, enemy.Name);
-				entityFactories.Add(entityFactory);
+				EntityFactory enemyFactory = new EntityFactory(enemyData.Health, enemyData.Damage, enemyData.Armor, enemyData.Name);
+				enemyFactories.Add(enemyFactory);
 			}
 		}
 
-		private List<EntityFactory> entityFactories;
+		private List<EntityFactory> enemyFactories;
 		private readonly Random rand = new Random();
 
 
@@ -42,15 +41,15 @@ namespace MAPZ_lab_RPG.Entities.Enemies
 
 			int enemyCount = 3 + level;
 
-			if (entityFactories.Count == 0)
+			if (enemyFactories.Count == 0)
 			{
 				throw new InvalidOperationException("No enemy factories available. Ensure that EntityReader.ReadEnemies() returns at least one enemy.");
 			}
 
 			for (int i = 0; i < enemyCount; i++)
 			{
-				int choice = rand.Next(0, entityFactories.Count);
-				enemies.Add(entityFactories[choice].CreateEntity<int>(level));
+				int choice = rand.Next(0, enemyFactories.Count);
+				enemies.Add(enemyFactories[choice].CreateEntity<int>(level));
 			}
 
 			return enemies;

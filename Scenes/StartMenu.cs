@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using Godot;
+using GodotPlugins.Game;
 using MAPZ_lab_RPG.Entities.Heroes;
+using Scenes.Managers;
 
 public partial class StartMenu : Control
 {
@@ -12,18 +14,19 @@ public partial class StartMenu : Control
 
 	private List<string> heroNames = new List<string>
 	{
-		"Archer",
-		"Swordsman",
-		"Pirate",
-		"Wizard",
-		"Rogue",
-		"Paladin",
-		"Barbarian",
+		"Default Hero 1",
+		"Default Hero 2",
+		"Default Hero 3",
+		"Default Hero 4",
+		"Default Hero 5",
+		"Default Hero 6",
+		"Default Hero 7",
 	};
 
 	public override void _Ready()
 	{
 		GD.Print("StartMenu ready!");
+		heroNames = MainHero.Instance.GetHeroNames(); // Ensure hero names are loaded
 		var heroButtonContainer = GetNode<Control>("CenterContainer/VBoxContainer/ScrollContainer/HBoxContainer");
 		foreach (var heroName in heroNames)
 		{
@@ -31,33 +34,23 @@ public partial class StartMenu : Control
 			var buttonControl = GD.Load<PackedScene>($"res://Scenes/HeroSelectButton.tscn").Instantiate<CenterContainer>();
 			var button = buttonControl.GetNode<Button>("Button");
 			button.Text = heroName;
-			//heroButton.Pressed += () => OnHeroSelected(heroName);
+			button.Pressed += () => OnHeroSelected(heroName);
 			heroButtonContainer.AddChild(buttonControl);
 		}
-
-		// _archerButton = GetNode<Button>("CenterContainer/VBoxContainer/ArcherButton");
-		// _swordsmanButton = GetNode<Button>("CenterContainer/VBoxContainer/SwordsmanButton");
-		// _pirateButton = GetNode<Button>("CenterContainer/VBoxContainer/PirateButton");
-
-
-		// _archerButton.Pressed += () => OnHeroSelected(HeroEnum.ARCHER);
-		// _swordsmanButton.Pressed += () => OnHeroSelected(HeroEnum.SWORDSMAN);
-		// _pirateButton.Pressed += () => OnHeroSelected(HeroEnum.PIRATE);
-		// GD.Print("Binded buttons!");
-
 	}
 
-	// private void OnHeroSelected(HeroEnum heroName)
-	// {
-	// 	GD.Print($"Hero selected: {heroName}");
+	private void OnHeroSelected(string heroName)
+	{
+		GD.Print($"Hero selected: {heroName}");
 
-	// 	GameData.SelectedHeroName = heroName;
+		GameData.SelectedHeroName = heroName;
+		MainHero.Instance.HeroSelect(heroName);
 
-	// 	// Change to the battle scene
-	// 	var error = GetTree().ChangeSceneToFile(BattleScenePath);
-	// 	if (error != Error.Ok)
-	// 	{
-	// 		GD.PrintErr($"Error changing scene to {BattleScenePath}: {error}");
-	// 	}
-	// }
+		// Change to the battle scene
+		var error = GetTree().ChangeSceneToFile(BattleScenePath);
+		if (error != Error.Ok)
+		{
+			GD.PrintErr($"Error changing scene to {BattleScenePath}: {error}");
+		}
+	}
 }

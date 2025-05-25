@@ -1,0 +1,27 @@
+[
+    {
+        "name": "Archer",
+        "Health": 100,
+        "Damage": 15,
+        "Armor": 5,
+        "Additional": {
+        }
+    },
+    {
+        "name": "Pirate",
+        "Health": 125,
+        "Damage": 12,
+        "Armor": 7,
+        "Additional": {
+            "CoinMultiply" : 1.5
+        }
+    },
+    {
+        "name": "Swordsman",
+        "Health": 150,
+        "Damage": 10,
+        "Armor": 10,
+        "Additional": {
+        }
+    }
+]
