@@ -5,6 +5,7 @@
         "Damage": 15,
         "Armor": 5,
         "Additional": {
+            "MissChance": 0.2
         }
     },
     {
@@ -13,7 +14,8 @@
         "Damage": 12,
         "Armor": 7,
         "Additional": {
-            "CoinMultiply" : 1.5
+            "CoinMultiply": 1.5,
+            "MissChance": 0.1
         }
     },
     {
@@ -22,6 +24,7 @@
         "Damage": 10,
         "Armor": 10,
         "Additional": {
+            "CriticalChance": 0.3
         }
     }
 ]

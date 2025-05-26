@@ -1,16 +1,12 @@
 using MAPZ_lab_RPG.Entities.Items;
-using MAPZ_lab_RPG.Entities.Heroes;
 using System;
-using System.Text.Json;
 using System.Collections.Generic;
 
 namespace MAPZ_lab_RPG.Entities.Heroes.HeroTypes
 {
     public class Hero : IHero
     {
-        private delegate int CoinMultiply(int coins);
-        private CoinMultiply coinMultiplyDelegate = coins => coins;
-        public Hero(double health, double damage, double armor, string name, Dictionary<string, object> additional)
+        public Hero(double health, double damage, double armor, string name)
         {
             MaxHealth = health;
             Health = health;
@@ -22,18 +18,10 @@ namespace MAPZ_lab_RPG.Entities.Heroes.HeroTypes
             Level = 1;
             UpgradePoints = 0;
             Inventory = new List<IItem>();
-            if (additional != null && additional.TryGetValue("CoinMultiply", out object coinMultiplyValue))
-            {
-                if (coinMultiplyValue is JsonElement jsonElement && jsonElement.ValueKind == JsonValueKind.Number)
-                {
-                    double multiplier = jsonElement.GetDouble();
-                    coinMultiplyDelegate = coins => (int)(coins * multiplier);
-                }
-            }
         }
         public int AddCoins(int coins)
         {
-            Coins += coinMultiplyDelegate(coins);
+            Coins += coins;
             return Coins;
         }
 
@@ -50,8 +38,9 @@ namespace MAPZ_lab_RPG.Entities.Heroes.HeroTypes
 
         public double TakeDamage(double damageTaken)
         {
-            double damage = damageTaken / (1 + (Armor / 100));
-            Health -= damage;
+            double damage = damageTaken;
+            double damageReducedArmor = damage / (1 + (Armor / 100));
+            Health -= damageReducedArmor;
             return Health;
         }
 

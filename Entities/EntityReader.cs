@@ -14,7 +14,7 @@ namespace MAPZ_lab_RPG.Entities
     }
     public class HeroData : EnemyData
     {
-        public Dictionary<string, object> Additional { get; set; }
+        public Dictionary<string, double> Additional { get; set; }
     }
     public class EntityReader
     {

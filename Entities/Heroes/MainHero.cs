@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using MAPZ_lab_RPG.Entities.Items;
 using MAPZ_lab_RPG.Entities.Heroes.HeroTypes;
-using Godot;
+using MAPZ_lab_RPG.Entities.Heroes.Decorators;
 
 namespace MAPZ_lab_RPG.Entities.Heroes
 {
@@ -24,11 +24,34 @@ namespace MAPZ_lab_RPG.Entities.Heroes
 		{
 			entityReader = new EntityReader();
 		}
-		public void HeroSelect(string heroName)
-		{
-			var heroData = entityReader.GetHeroData(heroName);
-			//GD.Print($"\n\nHealth = {heroData.Health}\nDamage = {heroData.Damage}\nArmor = {heroData.Armor}\nName = {heroData.Name}\nAdditional = {heroData.Additional.Keys} : {heroData.Additional["CoinMultiply"]}");
-			hero = new Hero(heroData.Health, heroData.Damage, heroData.Armor, heroData.Name, heroData.Additional);
+        public void HeroSelect(string heroName)
+        {
+            var heroData = entityReader.GetHeroData(heroName);
+            hero = new Hero(heroData.Health, heroData.Damage, heroData.Armor, heroData.Name);
+            
+            foreach (var kvp in heroData.Additional)
+            {
+                string key = kvp.Key;
+                switch (key)
+                {
+                    case "CoinMultiply":
+                        double coinMultiplier = kvp.Value;
+                        hero = new HeroCoinDecorator(hero, coinMultiplier);
+                        break;
+
+                    case "CriticalChance":
+                        double criticalChance = kvp.Value;
+                        hero = new HeroCriticalDecorator(hero, criticalChance);
+                        break;
+                    case "MissChance":
+                        double missChance = kvp.Value;
+                        hero = new HeroMissDecorator(hero, missChance);
+                        break;
+                    default:
+                        System.Console.WriteLine($"Unknown additional key: {key}");
+                        break;
+                }
+            }
 		}
 
 		public List<string> GetHeroNames()
