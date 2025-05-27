@@ -170,11 +170,7 @@ public partial class BattleScene : Node2D
 		_selectedEnemyVisual = null;
 		_previouslySelectedVisual = null;
 
-		int coinsForRound = HandleCoinsReward();
-		int expirienceForRound = HandleExpirienceReward();
-
-		_mainHeroManager.GainCoins(coinsForRound);
-		_mainHeroManager.AddExperienceAndLevelUpCheck(expirienceForRound);
+		_mainHeroManager.EarnRoundRewards(GameData.CurrentRound);
 
 		GameData.CurrentRound++;
 		GetTree().ChangeSceneToFile("res://Scenes/Shop.tscn");

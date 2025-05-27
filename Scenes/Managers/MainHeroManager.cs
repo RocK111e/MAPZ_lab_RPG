@@ -114,12 +114,17 @@ namespace Scenes.Managers
         {
             if (_hero == null) return;
             int previousLevel = _hero.GetLevel();
-            _hero.AddExperience(experience);
+            _hero.AddExpirience(experience);
             if (_hero.GetLevel() > previousLevel)
             {
                 UpdateLevelUI();
                 UpdateHealthUI();
             }
+        }
+
+        public void EarnRoundRewards(int round)
+        {
+            _hero.EarnRoundRewards(round);
         }
 
         public void GainCoins(int amount)

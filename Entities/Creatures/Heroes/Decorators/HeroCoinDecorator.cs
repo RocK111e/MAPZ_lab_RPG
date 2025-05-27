@@ -10,10 +10,10 @@ namespace MAPZ_lab_RPG.Entities.Heroes.Decorators
             _multiplier = multiplier;
         }
 
-        public override int AddCoins(int coins)
+        public override void EarnRoundRewards(int coins, int expirience)
         {
-            int modifiedCoins = (int)(coins * _multiplier);
-            return base.AddCoins(modifiedCoins);
+            int coinsMultiplied = (int)(coins * 1.5);
+            _hero.EarnRoundRewards(coinsMultiplied, expirience);
         }
     }
 }

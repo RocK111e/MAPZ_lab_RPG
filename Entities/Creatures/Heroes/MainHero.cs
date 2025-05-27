@@ -6,7 +6,6 @@ namespace MAPZ_lab_RPG.Entities.Heroes
 {
 	public class MainHero
 	{
-		private readonly EntityReader entityReader;
 		private static MainHero _instance;
 		public static MainHero Instance
 		{
@@ -26,7 +25,7 @@ namespace MAPZ_lab_RPG.Entities.Heroes
 
 		public List<string> GetHeroNames()
 		{
-			List<string> heroNames = entityReader.ReadHeroNames();
+			List<string> heroNames = EntityReader.Instance.ReadHeroNames();
 			return heroNames;
 		}
 
@@ -51,13 +50,19 @@ namespace MAPZ_lab_RPG.Entities.Heroes
 		{
 			return _hero.AddCoins(coins);
 		}
+		public void AddExpirience(int expirience)
+		{
+			_hero.AddExpirience(expirience);
+		}
 		public int SpendCoins(int coins)
 		{
 			return _hero.SpendCoins(coins);
 		}
-		public void AddExperience(int experience)
+		public void EarnRoundRewards(int round)
 		{
-			_hero.AddExperience(experience);
+			int coinsPerRound = 50 + 5 * round;
+            int expiriencePerRound = 30 + 20 * round;
+			_hero.EarnRoundRewards(coinsPerRound, expiriencePerRound);
 		}
 		public void Upgrade(string attribute)
 		{

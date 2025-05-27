@@ -45,11 +45,12 @@ namespace MAPZ_lab_RPG.Entities.Heroes.Decorators
         public virtual double Heal(double healAmount) => _hero.Heal(healAmount);
         public virtual void LevelUp() => _hero.LevelUp();
         public virtual int AddCoins(int coins) => _hero.AddCoins(coins);
+        public virtual void AddExpirience(int expirience) => _hero.AddExpirience(expirience);
         public virtual int SpendCoins(int coins) => _hero.SpendCoins(coins);
-        public virtual void AddExperience(int experience) => _hero.AddExperience(experience);
+        public virtual void EarnRoundRewards(int coins, int expirience) => _hero.EarnRoundRewards(coins, expirience);
         public virtual void Upgrade(string attribute) => _hero.Upgrade(attribute);
         public virtual void AddItem(IItem item) => _hero.AddItem(item);
-        public virtual void RemoveItem(IItem item) => _hero.RemoveItem(item);
+        public virtual bool RemoveItem(IItem item) => _hero.RemoveItem(item);
         public virtual List<IItem> GetItems() => _hero.GetItems();
         public virtual int GetItemsCount() => _hero.GetItemsCount();
 

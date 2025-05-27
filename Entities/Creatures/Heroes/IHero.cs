@@ -12,8 +12,9 @@ namespace MAPZ_lab_RPG.Entities.Heroes
         double Heal(double healAmount);
         void LevelUp();
         int AddCoins(int coins);
+        void AddExpirience(int expirience);
         int SpendCoins(int coins);
-        void AddExperience(int experience);
+        void EarnRoundRewards(int coins, int expirience);
         void Upgrade(string atribute);
         void AddItem(IItem item);
         bool RemoveItem(IItem item);

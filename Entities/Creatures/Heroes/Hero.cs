@@ -53,15 +53,21 @@ namespace MAPZ_lab_RPG.Entities.Heroes
             return Health;
         }
 
-        public void AddExperience(int experience)
+        public void AddExpirience(int expirience)
         {
-            //TODO normal level up (more experience with each level)
-            Experience += experience;
-            if (Experience >= 100)
+            Experience += expirience;
+            int expirienceToLevelUp = 100 + 50 * Level;
+            if (Experience >= expirienceToLevelUp)
             {
                 LevelUp();
-                Experience -= 100;
+                Experience -= expirienceToLevelUp;
             }
+        }
+
+        public void EarnRoundRewards(int coins, int expirience)
+        {
+            AddCoins(coins);
+            AddExpirience(expirience);
         }
 
         public void LevelUp()
