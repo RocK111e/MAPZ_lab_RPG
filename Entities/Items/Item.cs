@@ -1,9 +1,14 @@
 
 namespace MAPZ_lab_RPG.Entities.Items
 {
-    public abstract class Item : IItem
+    public class Item : IItem
     {
-        protected Item(string name, string description, double health, double damage, double armor, int price)
+        public Item(string name,
+                    string description,
+                    double health,
+                    double damage,
+                    double armor,
+                    int price)
         {
             Name = name;
             Description = description;
@@ -13,13 +18,21 @@ namespace MAPZ_lab_RPG.Entities.Items
             Price = price;
         }
 
-        public string Name { get; protected set; }
-        public string Description { get; protected set; }
-        public double Health { get; protected set; }
-        public double Damage { get; protected set; }
-        public double Armor { get; protected set; }
-        public int Price { get; protected set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public double Health { get; set; }
+        public double Damage { get; set; }
+        public double Armor { get; set; }
+        public int Price { get; set; }
 
-        public abstract IItem Copy();
+        public IItem Copy()
+        {
+            return new Item(Name,
+                            Description,
+                            Health,
+                            Damage,
+                            Armor,
+                            Price);
+        }
     }
 }

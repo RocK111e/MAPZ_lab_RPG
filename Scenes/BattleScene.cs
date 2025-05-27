@@ -14,7 +14,7 @@ public partial class BattleScene : Node2D
 	private Label _moneyLabel;
 	private Label _levelLabel;
 
-	private IEntity _selectedEnemyTarget;
+	private ICreature _selectedEnemyTarget;
 	private Control _selectedEnemyVisual;
 	private Control _previouslySelectedVisual;
 
@@ -60,7 +60,7 @@ public partial class BattleScene : Node2D
 		}
 	}
 
-	private void HandleEnemyClicked(IEntity enemy, Control visual)
+	private void HandleEnemyClicked(ICreature enemy, Control visual)
 	{
 		if (!_mainHeroManager.IsHeroAlive() || !_enemiesManager.HasActiveEnemies() || enemy.Health <= 0)
 		{
@@ -87,7 +87,7 @@ public partial class BattleScene : Node2D
 		PerformPlayerAttack(_selectedEnemyTarget);
 	}
 
-	private void PerformPlayerAttack(IEntity targetEnemy)
+	private void PerformPlayerAttack(ICreature targetEnemy)
 	{
 		if (targetEnemy == null || targetEnemy.Health <= 0)
 		{
@@ -129,9 +129,9 @@ public partial class BattleScene : Node2D
 		if (!_mainHeroManager.IsHeroAlive() || !_enemiesManager.HasActiveEnemies()) return;
 
 		GD.Print("--- Enemy Turn Starts ---");
-		List<IEntity> currentAttackers = new List<IEntity>(_enemiesManager.GetActiveEnemies());
+		List<ICreature> currentAttackers = new List<ICreature>(_enemiesManager.GetActiveEnemies());
 
-		foreach (IEntity enemy in currentAttackers)
+		foreach (ICreature enemy in currentAttackers)
 		{
 			if (!_mainHeroManager.IsHeroAlive()) break;
 			if (enemy.Health <= 0) continue;
@@ -152,7 +152,7 @@ public partial class BattleScene : Node2D
 		GD.Print("--- Enemy Turn Ends ---");
 	}
 
-	private void HandleAnEnemyDefeated(IEntity defeatedEnemy)
+	private void HandleAnEnemyDefeated(ICreature defeatedEnemy)
 	{
 		GD.Print($"BattleScene: {defeatedEnemy.Name} was defeated!");
 		if (_selectedEnemyTarget == defeatedEnemy)

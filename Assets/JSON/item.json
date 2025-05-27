@@ -1,0 +1,27 @@
+[
+    {
+      "type": "HealthRune",
+      "description": "Gives additional Health",
+      "health": 20.0,
+      "damage": 0.0,
+      "armor": 0.0,
+      "value": 50
+    },
+    {
+      "type": "DamageRune",
+      "description": "Gives additional Damage",
+      "health": 0.0,
+      "damage": 5.0,
+      "armor": 0.0,
+      "value": 50
+    },
+    {
+      "type": "ArmorRune",
+      "description": "Gives additional Armor",
+      "health": 0.0,
+      "damage": 0.0,
+      "armor": 2.5,
+      "value": 50
+    }
+]
+  

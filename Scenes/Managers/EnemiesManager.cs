@@ -1,7 +1,6 @@
 using Godot;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using MAPZ_lab_RPG.Entities;
 using MAPZ_lab_RPG.Entities.Enemies;
 
@@ -10,15 +9,15 @@ namespace Scenes.Managers
     public class EnemiesManager
     {
         private Node _enemyPlacementNode;
-        private List<IEntity> _activeEnemies;
-        private Dictionary<IEntity, Control> _enemyVisualsMap;
+        private List<ICreature> _activeEnemies;
+        private Dictionary<ICreature, Control> _enemyVisualsMap;
 
         private PackedScene _enemyVisualScene;
         private const string EnemyVisualScenePath = "res://Scenes/Entity.tscn";
 
-        public event Action<IEntity> OnEnemyDefeated;
+        public event Action<ICreature> OnEnemyDefeated;
         public event Action OnAllEnemiesDefeated;
-        public event Action<IEntity, Control> OnEnemyVisualClicked;
+        public event Action<ICreature, Control> OnEnemyVisualClicked;
 
         public EnemiesManager(Node enemyPlacementNode, int level)
         {
@@ -36,13 +35,13 @@ namespace Scenes.Managers
             if (_enemyVisualScene == null)
             {
                 GD.PrintErr($"EnemiesManager: Failed to load enemy visual scene at '{EnemyVisualScenePath}'.");
-                _activeEnemies = new List<IEntity>();
-                _enemyVisualsMap = new Dictionary<IEntity, Control>();
+                _activeEnemies = new List<ICreature>();
+                _enemyVisualsMap = new Dictionary<ICreature, Control>();
                 return;
             }
 
             _activeEnemies = EntityCreator.Instance.CreateEnemies(level);
-            _enemyVisualsMap = new Dictionary<IEntity, Control>();
+            _enemyVisualsMap = new Dictionary<ICreature, Control>();
 
             SpawnAndDisplayEnemies();
         }
@@ -59,7 +58,7 @@ namespace Scenes.Managers
 
             for (int i = 0; i < _activeEnemies.Count; i++)
             {
-                IEntity enemy = _activeEnemies[i];
+                ICreature enemy = _activeEnemies[i];
                 Control enemyVisualInstance = _enemyVisualScene.Instantiate<Control>();
 
                 if (enemyVisualInstance == null)
@@ -98,7 +97,7 @@ namespace Scenes.Managers
             }
         }
 
-        public void ApplyDamageToEnemy(IEntity enemy, double damageAmount)
+        public void ApplyDamageToEnemy(ICreature enemy, double damageAmount)
         {
             if (!_activeEnemies.Contains(enemy) || !_enemyVisualsMap.ContainsKey(enemy))
             {
@@ -121,7 +120,7 @@ namespace Scenes.Managers
             }
         }
 
-        private void HandleEnemyDefeat(IEntity defeatedEnemy)
+        private void HandleEnemyDefeat(ICreature defeatedEnemy)
         {
             GD.Print($"{defeatedEnemy.Name} has been defeated!");
             if (_enemyVisualsMap.TryGetValue(defeatedEnemy, out Control visualNode))
@@ -138,13 +137,13 @@ namespace Scenes.Managers
             }
         }
 
-        public double GetEnemyAttackDamage(IEntity attackingEnemy)
+        public double GetEnemyAttackDamage(ICreature attackingEnemy)
         {
             if (!_activeEnemies.Contains(attackingEnemy)) return 0;
             return attackingEnemy.Attack();
         }
 
-        public List<IEntity> GetActiveEnemies() => new List<IEntity>(_activeEnemies);
+        public List<ICreature> GetActiveEnemies() => new List<ICreature>(_activeEnemies);
         public bool HasActiveEnemies() => _activeEnemies.Count > 0;
 
         public void Cleanup()
@@ -158,7 +157,7 @@ namespace Scenes.Managers
             GD.Print("EnemiesManager cleaned up.");
         }
 
-        private void OnEnemyClick(InputEvent @event, IEntity enemy, Control enemyVisual)
+        private void OnEnemyClick(InputEvent @event, ICreature enemy, Control enemyVisual)
         {
             if (@event is InputEventMouseButton mouseEvent && mouseEvent.Pressed && mouseEvent.ButtonIndex == MouseButton.Left)
             {

@@ -1,15 +1,14 @@
 using System.Collections.Generic;
 using MAPZ_lab_RPG.Entities.Items;
 namespace MAPZ_lab_RPG.Entities.Heroes
-{        
-    public interface IHero : IEntity
+{
+    public interface IHero : ICreature
     {
         double MaxHealth { get; set; }
         int Coins { get; set; }
         int Experience { get; set; }
-        int UpgradePoints{ get; set; }
+        int UpgradePoints { get; set; }
         int Level { get; set; }
-        List<IItem> Inventory { get; set; }
         double Heal(double healAmount);
         void LevelUp();
         int AddCoins(int coins);
@@ -17,5 +16,8 @@ namespace MAPZ_lab_RPG.Entities.Heroes
         void AddExperience(int experience);
         void Upgrade(string atribute);
         void AddItem(IItem item);
+        void RemoveItem(IItem item);
+        List<IItem> GetItems();
+        int GetItemsCount();
     }
 }

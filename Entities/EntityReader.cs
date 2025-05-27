@@ -2,6 +2,7 @@ using Godot;
 using System;
 using System.Text.Json;
 using System.Collections.Generic;
+using MAPZ_lab_RPG.Entities.Items;
 
 namespace MAPZ_lab_RPG.Entities
 {
@@ -18,8 +19,15 @@ namespace MAPZ_lab_RPG.Entities
     }
     public class EntityReader
     {
+        private static readonly EntityReader _instance = new EntityReader();
+
+        public static EntityReader Instance
+        {
+            get { return _instance; }
+        }
         private const string heroJsonFilePath = "res://Assets/JSON/hero.json";
         private const string enemyJsonFilePath = "res://Assets/JSON/enemy.json";
+        private const string itemJsonFilePath = "res://Assets/JSON/item.json";
 
         private readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
         {
@@ -101,7 +109,7 @@ namespace MAPZ_lab_RPG.Entities
             }
         }
 
-        public HeroData GetHeroData(string heroName)
+        public HeroData ReadHeroData(string heroName)
         {
             try
             {
@@ -141,6 +149,41 @@ namespace MAPZ_lab_RPG.Entities
             {
                 Console.WriteLine($"Unexpected error: {ex.Message}");
                 return null;
+            }
+        }
+        public List<IItem> ReadItemsData()
+        {
+            List<IItem> items = new List<IItem>();
+            try
+            {
+                if (!FileAccess.FileExists(itemJsonFilePath))
+                {
+                    GD.PrintErr($"File not found: {itemJsonFilePath}");
+                    return items;
+                }
+
+                using var file = FileAccess.Open(itemJsonFilePath, FileAccess.ModeFlags.Read);
+                string jsonString = file.GetAsText();
+
+                items = JsonSerializer.Deserialize<List<IItem>>(jsonString, _jsonOptions);
+
+                if (items == null)
+                {
+                    Console.WriteLine("Deserialization returned null.");
+                    return items;
+                }
+
+                return items;
+            }
+            catch (JsonException ex)
+            {
+                Console.WriteLine($"Error parsing JSON: {ex.Message}");
+                return items;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Unexpected error: {ex.Message}");
+                return items;
             }
         }
     }

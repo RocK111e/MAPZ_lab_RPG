@@ -1,5 +1,4 @@
 using Godot;
-using MAPZ_lab_RPG.Entities.Heroes;
 using Scenes.Managers;
 
 public partial class GameData : Node

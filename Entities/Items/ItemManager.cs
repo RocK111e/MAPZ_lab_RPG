@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using MAPZ_lab_RPG.Entities.Enemies;
 namespace MAPZ_lab_RPG.Entities.Items
 {
     public class ItemManager
@@ -12,7 +13,7 @@ namespace MAPZ_lab_RPG.Entities.Items
 
         private ItemManager()
         {
-            items = MockedItems.GetItems();
+            items = EntityCreator.Instance.CreateItems();
         }
 
         public List<IItem> GenerateItems()

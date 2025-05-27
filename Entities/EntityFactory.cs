@@ -10,10 +10,10 @@ namespace MAPZ_lab_RPG.Entities.Enemies
             Armor = armor;
             Name = name;
         }
-        public IEntity CreateEntity<T>(T param)
+        public ICreature CreateEntity<T>(T param)
         {
             if (param is int intLevel){
-                return new Entity(
+                return new Creature(
                     Health,
                     Damage,
                     Armor,

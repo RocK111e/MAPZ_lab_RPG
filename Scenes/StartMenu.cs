@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using Godot;
-using GodotPlugins.Game;
 using MAPZ_lab_RPG.Entities.Heroes;
-using Scenes.Managers;
 
 public partial class StartMenu : Control
 {

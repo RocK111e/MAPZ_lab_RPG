@@ -1,9 +1,9 @@
 
 namespace MAPZ_lab_RPG.Entities.Enemies
 {
-    public class Entity : IEntity
+    public class Creature : ICreature
     {
-        public Entity(double health, double damage, double armor, string name, int level){
+        public Creature(double health, double damage, double armor, string name, int level){
             Health = health + 0.1 * health * level;
             Damage = damage + 0.2 * damage * level;
             Armor = armor + 0.1 * armor * level;

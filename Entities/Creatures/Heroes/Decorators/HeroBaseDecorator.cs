@@ -42,13 +42,6 @@ namespace MAPZ_lab_RPG.Entities.Heroes.Decorators
             get => _hero.Level;
             set => _hero.Level = value;
         }
-
-        public virtual List<IItem> Inventory
-        {
-            get => _hero.Inventory;
-            set => _hero.Inventory = value;
-        }
-
         public virtual double Heal(double healAmount) => _hero.Heal(healAmount);
         public virtual void LevelUp() => _hero.LevelUp();
         public virtual int AddCoins(int coins) => _hero.AddCoins(coins);
@@ -56,6 +49,9 @@ namespace MAPZ_lab_RPG.Entities.Heroes.Decorators
         public virtual void AddExperience(int experience) => _hero.AddExperience(experience);
         public virtual void Upgrade(string attribute) => _hero.Upgrade(attribute);
         public virtual void AddItem(IItem item) => _hero.AddItem(item);
+        public virtual void RemoveItem(IItem item) => _hero.RemoveItem(item);
+        public virtual List<IItem> GetItems() => _hero.GetItems();
+        public virtual int GetItemsCount() => _hero.GetItemsCount();
 
         // IEntity properties
         public virtual double Health

@@ -1,8 +1,7 @@
 using MAPZ_lab_RPG.Entities.Items;
-using System;
 using System.Collections.Generic;
 
-namespace MAPZ_lab_RPG.Entities.Heroes.HeroTypes
+namespace MAPZ_lab_RPG.Entities.Heroes
 {
     public class Hero : IHero
     {
@@ -17,7 +16,7 @@ namespace MAPZ_lab_RPG.Entities.Heroes.HeroTypes
             Experience = 0;
             Level = 1;
             UpgradePoints = 0;
-            Inventory = new List<IItem>();
+            _inventory = new Inventory();
         }
         public int AddCoins(int coins)
         {
@@ -89,19 +88,45 @@ namespace MAPZ_lab_RPG.Entities.Heroes.HeroTypes
                     break;
             }
         }
+        public void AddItem(IItem item)
+        {
+            _inventory.AddItem(item);
 
-        public void AddItem(IItem item){
-            Inventory.Add(item);
+            double ratio = Health / MaxHealth;
+            MaxHealth += item.Health;
+            Health = MaxHealth * ratio;
+
+            Armor += item.Armor;
+            Damage += item.Damage;
+        }
+        public void RemoveItem(IItem item)
+        {
+            _inventory.RemoveItem(item);
+
+            double ratio = Health / MaxHealth;
+            MaxHealth -= item.Health;
+            Health = MaxHealth * ratio;
+
+            Armor -= item.Armor;
+            Damage -= item.Damage;
+        }
+        public List<IItem> GetItems()
+        {
+            return _inventory.GetItems();
+        }
+        public int GetItemsCount()
+        {
+            return _inventory.GetItemsCount();
         }
         public string Name { get; set; }
-        public double MaxHealth { get; set; }
         public double Health { get; set; }
+        public double MaxHealth { get; set; }
         public double Damage { get; set; }
         public double Armor { get; set; }
         public int Coins { get; set; }
         public int Experience { get; set; }
         public int Level { get; set; }
         public int UpgradePoints{ get; set; }
-        public List<IItem> Inventory { get; set; }
+        private Inventory _inventory;
     }
 }
