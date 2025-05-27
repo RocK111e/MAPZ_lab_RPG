@@ -19,20 +19,35 @@ namespace MAPZ_lab_RPG.Entities.Shop
         {
             itemManager = ItemManager.Instance;
         }
-        public IItem BuyItem(IItem item, ref MainHero hero)
+        public bool BuyItem(IItem item, ref MainHero hero)
         {
-            if (hero.GetCoins() < item.Price){
-                return null;
+            if (hero.GetCoins() < item.Price)
+            {
+                return false;
             }
-            
+
             bool success = items.Remove(item);
 
-            if (!success){
-                return null;
+            if (!success)
+            {
+                return false;
             }
 
             hero.SpendCoins(item.Price);
-            return item;
+            hero.AddItem(item);
+            return true;
+        }
+        public bool SellItem(IItem item, ref MainHero hero)
+        {
+            if (!hero.RemoveItem(item))
+            {
+                return false;
+            }
+            
+            items.Add(item);
+
+            hero.AddCoins((int)(item.Price * 0.9));
+            return true;
         }
         public List<IItem> GenerateItems()
         {

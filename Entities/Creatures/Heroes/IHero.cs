@@ -16,7 +16,7 @@ namespace MAPZ_lab_RPG.Entities.Heroes
         void AddExperience(int experience);
         void Upgrade(string atribute);
         void AddItem(IItem item);
-        void RemoveItem(IItem item);
+        bool RemoveItem(IItem item);
         List<IItem> GetItems();
         int GetItemsCount();
     }

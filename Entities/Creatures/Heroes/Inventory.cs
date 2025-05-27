@@ -64,9 +64,9 @@ namespace MAPZ_lab_RPG.Entities.Heroes
         {
             _inventory.Add(item);
         }
-        public void RemoveItem(IItem item)
+        public bool RemoveItem(IItem item)
         {
-            _inventory.Remove(item);
+            return _inventory.Remove(item);
         }
     }
 }

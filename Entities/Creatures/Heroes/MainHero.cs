@@ -99,13 +99,13 @@ namespace MAPZ_lab_RPG.Entities.Heroes
 		{
 			return _hero.UpgradePoints;
 		}
-		public void AddItem(Item item)
+		public void AddItem(IItem item)
 		{
 			_hero.AddItem(item);
 		}
-        public void RemoveItem(Item item)
+        public bool RemoveItem(IItem item)
 		{
-			_hero.RemoveItem(item);
+			return _hero.RemoveItem(item);
 		}
 		public List<IItem> GetItems()
         {

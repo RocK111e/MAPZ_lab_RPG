@@ -99,9 +99,12 @@ namespace MAPZ_lab_RPG.Entities.Heroes
             Armor += item.Armor;
             Damage += item.Damage;
         }
-        public void RemoveItem(IItem item)
+        public bool RemoveItem(IItem item)
         {
-            _inventory.RemoveItem(item);
+            if (!_inventory.RemoveItem(item))
+            {
+                return false;
+            }
 
             double ratio = Health / MaxHealth;
             MaxHealth -= item.Health;
@@ -109,6 +112,7 @@ namespace MAPZ_lab_RPG.Entities.Heroes
 
             Armor -= item.Armor;
             Damage -= item.Damage;
+            return true;
         }
         public List<IItem> GetItems()
         {
