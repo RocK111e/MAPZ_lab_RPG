@@ -1,22 +1,14 @@
 using Godot;
 using Scenes.Managers;
-using MAPZ_lab_RPG.Entities;
-using System.Collections.Generic;
 
 public partial class BattleScene : Node2D
 {
 	private Control _heroDisplayNode; 
-	private MainHeroManager _mainHeroManager;
-
-	private GridContainer _enemyPlaceholderNode; 
-	private EnemiesManager _enemiesManager;
+	private GridContainer _enemyPlaceholderNode;
+	private GameManagerFacade _GameManagerFacade; 
 
 	private Label _moneyLabel;
 	private Label _levelLabel;
-
-	private ICreature _selectedEnemyTarget;
-	private Control _selectedEnemyVisual;
-	private Control _previouslySelectedVisual;
 
 	public override void _Ready()
 	{
@@ -25,177 +17,38 @@ public partial class BattleScene : Node2D
 		RoundLabel.Text = $"Round: {GameData.CurrentRound}";
 
 		// Hero setup
-		string selectedHero = GameData.SelectedHeroName;
-
-		_heroDisplayNode = GD.Load<PackedScene>("res://Scenes/Entity.tscn").Instantiate<Control>();
-		var heroContainer = GetNode<CenterContainer>("Control/VBoxContainer/HBoxContainer2/CenterContainer"); 
-		if (heroContainer == null) { GD.PrintErr("BattleScene: Hero container node 'Control/VBoxContainer/HBoxContainer2/CenterContainer' not found!"); GetTree().Quit(); return; }
-		heroContainer.AddChild(_heroDisplayNode); 
-		_heroDisplayNode.Name = "HeroDisplayNode";
-
+		var heroContainer = GetNode<CenterContainer>("Control/VBoxContainer/HBoxContainer2/CenterContainer");
 		_moneyLabel = GetNode<Label>("Control/VBoxContainer/HBoxContainer3/MoneyLabel");
 		_levelLabel = GetNode<Label>("Control/VBoxContainer/HBoxContainer3/LevelLabel");
-		if (_moneyLabel == null || _levelLabel == null) { GD.PrintErr("BattleScene: MoneyLabel or LevelLabel not found!"); GetTree().Quit(); return; }
-		_mainHeroManager = GameData.MainHeroManager ?? new MainHeroManager(_heroDisplayNode, _moneyLabel, _levelLabel);
-		GD.Print("MainHeroManager initialized.");
-		GameData.MainHeroManager = _mainHeroManager;
-		_mainHeroManager.SetNodes(_heroDisplayNode, _moneyLabel, _levelLabel);
 
 		// Enemy setup
 		_enemyPlaceholderNode = GetNode<GridContainer>("Control/VBoxContainer/HBoxContainer2/GridContainer");
-		if (_enemyPlaceholderNode == null) { GD.PrintErr("BattleScene: EnemyGridContainer node at 'Control/VBoxContainer/HBoxContainer2/EnemyGridContainer' not found! Ensure path is correct and type is GridContainer."); GetTree().Quit(); return; }
 
-		int currentBattleLevel = GameData.CurrentRound;
-		_enemiesManager = new EnemiesManager(_enemyPlaceholderNode, currentBattleLevel);
-		GD.Print($"EnemiesManager initialized. Enemies placed into GridContainer: {_enemyPlaceholderNode.GetPath()}");
 
-		_enemiesManager.OnEnemyDefeated += HandleAnEnemyDefeated;
-		_enemiesManager.OnAllEnemiesDefeated += HandleAllEnemiesDefeated;
-		_enemiesManager.OnEnemyVisualClicked += HandleEnemyClicked;
+		_GameManagerFacade = GameData.GameManagerFacade ?? new GameManagerFacade();
+		GameData.GameManagerFacade = _GameManagerFacade;
+		_GameManagerFacade.SetNodes(heroContainer, _enemyPlaceholderNode, _moneyLabel, _levelLabel, GameData.CurrentRound);
 
-		if (!_enemiesManager.HasActiveEnemies() && _mainHeroManager.IsHeroAlive())
-		{
-			GD.Print("BattleScene: No enemies to fight from the start.");
-			HandleAllEnemiesDefeated();
-		}
+		_GameManagerFacade.EndBattle += SwitchToShopScene;
+		_GameManagerFacade.LoseBattle += SwitchToLoseBattleScene;
 	}
 
-	private void HandleEnemyClicked(ICreature enemy, Control visual)
+	private void SwitchToShopScene()
 	{
-		if (!_mainHeroManager.IsHeroAlive() || !_enemiesManager.HasActiveEnemies() || enemy.Health <= 0)
-		{
-			GD.Print("Cannot select target: Hero defeated, no active enemies, or target is already defeated.");
-			return;
-		}
-
-		GD.Print($"BattleScene: Clicked! Target: {enemy.Name}");
-
-		if (_previouslySelectedVisual != null && IsInstanceValid(_previouslySelectedVisual) && _previouslySelectedVisual != visual)
-		{
-			_previouslySelectedVisual.Modulate = Colors.White;
-		}
-
-		_selectedEnemyTarget = enemy;
-		_selectedEnemyVisual = visual;
-
-		if (_selectedEnemyVisual != null && IsInstanceValid(_selectedEnemyVisual))
-		{
-			_selectedEnemyVisual.Modulate = new Color(1.2f, 1.2f, 0.8f, 1.0f);
-		}
-		_previouslySelectedVisual = _selectedEnemyVisual;
-
-		PerformPlayerAttack(_selectedEnemyTarget);
-	}
-
-	private void PerformPlayerAttack(ICreature targetEnemy)
-	{
-		if (targetEnemy == null || targetEnemy.Health <= 0)
-		{
-			GD.Print("Player attack: Invalid or already defeated target.");
-			if (_selectedEnemyTarget == targetEnemy)
-			{
-				if (_selectedEnemyVisual != null && IsInstanceValid(_selectedEnemyVisual)) _selectedEnemyVisual.Modulate = Colors.White;
-				_selectedEnemyTarget = null;
-				_selectedEnemyVisual = null;
-				_previouslySelectedVisual = null;
-			}
-			return;
-		}
-		if (!_mainHeroManager.IsHeroAlive())
-		{
-			GD.Print("Player attack: Hero is defeated and cannot attack.");
-			return;
-		}
-
-		double playerDamage = _mainHeroManager.GetHeroAttackDamage();
-		GD.Print($"Player attacks {targetEnemy.Name} for {playerDamage} potential damage.");
-		_enemiesManager.ApplyDamageToEnemy(targetEnemy, playerDamage);
-
-		if (targetEnemy.Health <= 0)
-		{
-			_selectedEnemyTarget = null;
-			_selectedEnemyVisual = null;
-			_previouslySelectedVisual = null;
-		}
-
-		if (_enemiesManager.HasActiveEnemies() && _mainHeroManager.IsHeroAlive())
-		{
-			HandleEnemyTurns();
-		}
-	}
-
-	private async void HandleEnemyTurns()
-	{
-		if (!_mainHeroManager.IsHeroAlive() || !_enemiesManager.HasActiveEnemies()) return;
-
-		GD.Print("--- Enemy Turn Starts ---");
-		List<ICreature> currentAttackers = new List<ICreature>(_enemiesManager.GetActiveEnemies());
-
-		foreach (ICreature enemy in currentAttackers)
-		{
-			if (!_mainHeroManager.IsHeroAlive()) break;
-			if (enemy.Health <= 0) continue;
-
-			double enemyDamage = _enemiesManager.GetEnemyAttackDamage(enemy);
-			GD.Print($"{enemy.Name} attacks hero for {enemyDamage} damage.");
-			_mainHeroManager.HeroTakeDamage(enemyDamage);
-
-			await ToSignal(GetTree().CreateTimer(0.4f), SceneTreeTimer.SignalName.Timeout);
-
-			if (!_mainHeroManager.IsHeroAlive())
-			{
-				GD.Print("Hero has been defeated!");
-				GetTree().ChangeSceneToFile("res://Scenes/LoseScreen.tscn");
-				break;
-			}
-		}
-		GD.Print("--- Enemy Turn Ends ---");
-	}
-
-	private void HandleAnEnemyDefeated(ICreature defeatedEnemy)
-	{
-		GD.Print($"BattleScene: {defeatedEnemy.Name} was defeated!");
-		if (_selectedEnemyTarget == defeatedEnemy)
-		{
-			_selectedEnemyTarget = null;
-			_selectedEnemyVisual = null;
-			_previouslySelectedVisual = null;
-		}
-	}
-
-	private void HandleAllEnemiesDefeated()
-	{
-		GD.Print("BattleScene: VICTORY! All enemies are defeated.");
-		_selectedEnemyTarget = null;
-		_selectedEnemyVisual = null;
-		_previouslySelectedVisual = null;
-
-		_mainHeroManager.EarnRoundRewards(GameData.CurrentRound);
-
-		GameData.CurrentRound++;
+		GD.Print("Switching to Shop scene.");
 		GetTree().ChangeSceneToFile("res://Scenes/Shop.tscn");
 	}
 
-	private int HandleCoinsReward()
+	public void SwitchToLoseBattleScene()
 	{
-		int coinsForRound = 50 + 5 * GameData.CurrentRound;
-		return coinsForRound;
-	}
-
-	private int HandleExpirienceReward()
-	{
-		int expirienceForRound = 30 + 20 * GameData.CurrentRound;
-		return expirienceForRound;
+		GD.Print("Switching to Lose Battle scene.");
+		GetTree().ChangeSceneToFile("res://Scenes/LoseScreen.tscn");
 	}
 
 	public override void _ExitTree()
 	{
-		if (_enemiesManager != null)
-		{
-			_enemiesManager.OnEnemyDefeated -= HandleAnEnemyDefeated;
-			_enemiesManager.OnAllEnemiesDefeated -= HandleAllEnemiesDefeated;
-			_enemiesManager.OnEnemyVisualClicked -= HandleEnemyClicked;
-			_enemiesManager.Cleanup();
-		}
+		_GameManagerFacade.EndBattle -= SwitchToShopScene;
+		_GameManagerFacade.LoseBattle -= SwitchToLoseBattleScene;
+		_GameManagerFacade.Cleanup();
 	}
 }

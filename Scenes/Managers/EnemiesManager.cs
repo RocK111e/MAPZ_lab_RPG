@@ -19,7 +19,12 @@ namespace Scenes.Managers
         public event Action OnAllEnemiesDefeated;
         public event Action<ICreature, Control> OnEnemyVisualClicked;
 
-        public EnemiesManager(Node enemyPlacementNode, int level)
+        public EnemiesManager()
+        {
+            
+        }
+
+        public void SetNodes(Node enemyPlacementNode, int level)
         {
             if (enemyPlacementNode == null)
             {

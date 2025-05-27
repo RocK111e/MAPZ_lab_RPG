@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Godot;
 using MAPZ_lab_RPG.Entities.Heroes;
 using MAPZ_lab_RPG.Entities.Heroes.Decorators;
 using MAPZ_lab_RPG.Entities.Items;
@@ -67,6 +68,11 @@ namespace MAPZ_lab_RPG.Entities.Enemies
 
 		public IHero CreateHero(string heroName)
 		{
+			if (string.IsNullOrWhiteSpace(heroName))
+			{
+				GD.PrintErr("Hero name cannot be null or empty.");
+				throw new ArgumentException("Hero name cannot be null or empty", nameof(heroName));
+			}
 			HeroData heroData = EntityReader.Instance.ReadHeroData(heroName);
 			IHero hero = new Hero(heroData.Health, heroData.Damage, heroData.Armor, heroData.Name);
 

@@ -41,7 +41,6 @@ public partial class StartMenu : Control
 	{
 		GD.Print($"Hero selected: {heroName}");
 
-		GameData.SelectedHeroName = heroName;
 		MainHero.Instance.HeroSelect(heroName);
 
 		// Change to the battle scene

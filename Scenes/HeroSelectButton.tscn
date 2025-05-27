@@ -1,4 +1,4 @@
-[gd_scene load_steps=0 format=3 uid="uid://coumnbcbw4ltr"]
+[gd_scene format=3 uid="uid://coumnbcbw4ltr"]
 
 [node name="CenterContainer" type="CenterContainer"]
 custom_minimum_size = Vector2(160, 50)
