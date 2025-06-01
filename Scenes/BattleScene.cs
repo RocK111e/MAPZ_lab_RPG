@@ -3,9 +3,9 @@ using Scenes.Managers;
 
 public partial class BattleScene : Node2D
 {
-	private Control _heroDisplayNode; 
+	private Control _heroDisplayNode;
 	private GridContainer _enemyPlaceholderNode;
-	private GameManagerFacade _GameManagerFacade; 
+	private GameManagerFacade _GameManagerFacade;
 
 	private Label _moneyLabel;
 	private Label _levelLabel;
@@ -27,6 +27,7 @@ public partial class BattleScene : Node2D
 
 		_GameManagerFacade = GameData.GameManagerFacade ?? new GameManagerFacade();
 		GameData.GameManagerFacade = _GameManagerFacade;
+
 		_GameManagerFacade.SetNodes(heroContainer, _enemyPlaceholderNode, _moneyLabel, _levelLabel, GameData.CurrentRound);
 
 		_GameManagerFacade.EndBattle += SwitchToShopScene;
@@ -50,5 +51,21 @@ public partial class BattleScene : Node2D
 		_GameManagerFacade.EndBattle -= SwitchToShopScene;
 		_GameManagerFacade.LoseBattle -= SwitchToLoseBattleScene;
 		_GameManagerFacade.Cleanup();
+	}
+	
+	public override void _Input(InputEvent @event)
+	{
+		if (@event is InputEventKey keyEvent && keyEvent.Pressed && !keyEvent.Echo)
+		{
+			for (int i = 0; i < _GameManagerFacade.EnemiesManager.GetKeyBinds().Count; i++)
+			{
+				var (keyIndex, command) = _GameManagerFacade.EnemiesManager.GetKeyBinds()[i];
+				if (keyEvent.Keycode == Key.Key1 + (keyIndex - 1))
+				{
+					GD.Print($"GameManager: Key {keyIndex} pressed, executing attack.");
+					command.Execute();
+				}
+			}
+		}
 	}
 }

@@ -19,9 +19,12 @@ namespace Scenes.Managers
         public event Action OnAllEnemiesDefeated;
         public event Action<ICreature, Control> OnEnemyVisualClicked;
 
+        private List<(int keyIndex, AttackCommand command)> _keyBinds;
+        private List<AttackCommand> _attackCommands;
+
         public EnemiesManager()
         {
-            
+
         }
 
         public void SetNodes(Node enemyPlacementNode, int level)
@@ -49,8 +52,45 @@ namespace Scenes.Managers
             _enemyVisualsMap = new Dictionary<ICreature, Control>();
 
             SpawnAndDisplayEnemies();
+            _attackCommands = new List<AttackCommand>();
+            _keyBinds = new();
+            SetClickListeners();
         }
 
+        public List<(int keyIndex, AttackCommand command)> GetKeyBinds()
+        {
+            return _keyBinds;
+        }
+
+        public void SetClickListeners()
+        {
+            _keyBinds.Clear();
+            int i = 1;
+            foreach (var kvp in _enemyVisualsMap)
+            {
+                GD.Print($"EnemiesManager: binding clicks");
+                AttackCommand attackCommand = new AttackCommand(kvp.Key, kvp.Value);
+
+                int localIndex = i;
+
+                kvp.Value.GuiInput += (@event) =>
+                {
+                    if (@event is InputEventMouseButton mouseEvent &&
+                        mouseEvent.Pressed &&
+                        mouseEvent.ButtonIndex == MouseButton.Left)
+                    {
+                        GD.Print($"EnemiesManager: Clicked on enemy visual");
+                        attackCommand.Execute();
+                    }
+                };
+
+                attackCommand.OnAttackExecuted += OnEnemyClicked;
+                _attackCommands.Add(attackCommand);
+
+                _keyBinds.Add((localIndex, attackCommand));
+                i++;
+            }
+        }
         private void SpawnAndDisplayEnemies()
         {
             if (_activeEnemies.Count == 0)
@@ -93,7 +133,7 @@ namespace Scenes.Managers
                 Texture2D texture = GD.Load<Texture2D>(texturePath);
                 icon.Texture = texture;
 
-                enemyVisualInstance.GuiInput += (InputEvent @event) => OnEnemyClick(@event, enemy, enemyVisualInstance);
+                // enemyVisualInstance.GuiInput += (InputEvent @event) => OnEnemyClick(@event);
 
                 _enemyPlacementNode.AddChild(enemyVisualInstance);
                 _enemyVisualsMap.Add(enemy, enemyVisualInstance);
@@ -134,6 +174,7 @@ namespace Scenes.Managers
                 _enemyVisualsMap.Remove(defeatedEnemy);
             }
             _activeEnemies.Remove(defeatedEnemy);
+            SetClickListeners();
             OnEnemyDefeated?.Invoke(defeatedEnemy);
             if (_activeEnemies.Count == 0)
             {
@@ -162,12 +203,9 @@ namespace Scenes.Managers
             GD.Print("EnemiesManager cleaned up.");
         }
 
-        private void OnEnemyClick(InputEvent @event, ICreature enemy, Control enemyVisual)
+        public void OnEnemyClicked(ICreature targetEnemy, Control targetVisual)
         {
-            if (@event is InputEventMouseButton mouseEvent && mouseEvent.Pressed && mouseEvent.ButtonIndex == MouseButton.Left)
-            {
-                OnEnemyVisualClicked?.Invoke(enemy, enemyVisual);
-            }
+            OnEnemyVisualClicked?.Invoke(targetEnemy, targetVisual);
         }
     }
 }

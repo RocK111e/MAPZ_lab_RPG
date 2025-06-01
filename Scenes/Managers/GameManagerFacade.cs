@@ -2,6 +2,7 @@ using System;
 using Godot;
 using MAPZ_lab_RPG.Entities;
 using System.Collections.Generic;
+using System.Reflection.Metadata;
 
 namespace Scenes.Managers
 {
