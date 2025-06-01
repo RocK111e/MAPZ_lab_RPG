@@ -48,7 +48,7 @@ namespace MAPZ_lab_RPG.Entities.Heroes
 
 		public double TakeDamage(double damageTaken)
 		{
-			return _currentState.TakeDamage(_hero, damageTaken);
+			return _hero.TakeDamage(_currentState.TakeDamage(_hero, damageTaken));
 		}
 		public double Heal(double healAmount)
 		{

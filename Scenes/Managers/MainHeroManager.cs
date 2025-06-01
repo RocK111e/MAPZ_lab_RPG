@@ -8,7 +8,7 @@ namespace Scenes.Managers
 	public class MainHeroManager
 	{
 		private Control _heroDisplayNode;
-		private MainHero _hero;
+		public MainHero _hero;
 
 		private string _heroName;
 		private const string EnemyVisualScenePath = "res://Scenes/Entity.tscn";
