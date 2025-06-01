@@ -1,12 +1,16 @@
 using System.Collections.Generic;
 using MAPZ_lab_RPG.Entities.Items;
 using MAPZ_lab_RPG.Entities.Enemies;
+using MAPZ_lab_RPG.Entities.Creatures.Heroes.States;
+
 
 namespace MAPZ_lab_RPG.Entities.Heroes
 {
 	public class MainHero
 	{
 		private static MainHero _instance;
+		private IHero _hero { get; set; }
+		private IHeroState _currentState;
 		public static MainHero Instance
 		{
 			get
@@ -18,25 +22,33 @@ namespace MAPZ_lab_RPG.Entities.Heroes
 				return _instance;
 			}
 		}
-        public void HeroSelect(string heroName)
+		public IHeroState GetState()
         {
+			return _currentState;
+        }
+		public void SetState(IHeroState state)
+		{
+			_currentState = state;
+		}
+		public void HeroSelect(string heroName)
+		{
 			_hero = EntityCreator.Instance.CreateHero(heroName);
+			_currentState = new NormalState();
 		}
 
 		public List<string> GetHeroNames()
 		{
-			List<string> heroNames = EntityReader.Instance.ReadHeroNames();
-			return heroNames;
+			return EntityReader.Instance.ReadHeroNames();
 		}
 
 		public double Atack()
 		{
-			return _hero.Attack();
+			return _currentState.Attack(_hero);
 		}
 
 		public double TakeDamage(double damageTaken)
 		{
-			return _hero.TakeDamage(damageTaken);
+			return _currentState.TakeDamage(_hero, damageTaken);
 		}
 		public double Heal(double healAmount)
 		{
@@ -120,7 +132,6 @@ namespace MAPZ_lab_RPG.Entities.Heroes
         {
             return _hero.GetItemsCount();
         }
-		private IHero _hero { get; set; }
 	}
 
 }
